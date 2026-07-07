@@ -28,8 +28,6 @@ export const profile = {
     "Construyo productos web de punta a punta: interfaz, API y base de datos, cuidando rendimiento y experiencia de usuario.",
 };
 
-export const focus = ["JavaScript", "TypeScript", "React", "Node.js"];
-
 export type Skill = {
   name: string;
   icon: IconType;
