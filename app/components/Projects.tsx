@@ -4,14 +4,14 @@ export default function Projects() {
   return (
     <section id="proyectos" className="scroll-mt-24 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
+        <h2 className="text-center text-sm font-semibold uppercase tracking-widest text-zinc-500">
           Proyectos
         </h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
             <article
               key={i}
-              className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:border-emerald-400/30"
+              className="group flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-emerald-400/30 hover:bg-white/10 hover:shadow-[0_0_30px_-12px] hover:shadow-emerald-400/50"
             >
               <div>
                 <h3 className="text-lg font-semibold text-zinc-50">{project.title}</h3>

@@ -4,14 +4,11 @@ export default function Contact() {
   return (
     <section id="contacto" className="scroll-mt-24 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
+        <h2 className="text-center text-sm font-semibold uppercase tracking-widest text-zinc-500">
           Contacto
         </h2>
-        <p className="mt-3 max-w-xl text-zinc-400">
-          ¿Tienes un proyecto en mente o quieres hablar? Escríbeme.
-        </p>
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-6">
+        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
           <a
             href={`mailto:${contact.email}`}
             className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-zinc-200 transition-colors hover:border-emerald-400/30 hover:text-emerald-400"

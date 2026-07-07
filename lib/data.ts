@@ -1,46 +1,62 @@
+import type { IconType } from "react-icons";
+import {
+  SiCplusplus,
+  SiDocker,
+  SiExpress,
+  SiGit,
+  SiGithub,
+  SiGo,
+  SiGraphql,
+  SiJavascript,
+  SiMongodb,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiOpenjdk,
+  SiPostgresql,
+  SiPython,
+  SiReact,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
+import { FaCss3Alt, FaHtml5 } from "react-icons/fa6";
+
 export const profile = {
   name: "Samuel Martinez",
   alias: "Aleeas Glitzy",
   tagline: "Desarrollador Full Stack",
   about:
-    "Desarrollador Full Stack apasionado por construir productos con React y Node.js. Me gusta trabajar en todo el ciclo de una aplicación, desde la interfaz hasta la API y la base de datos, cuidando el rendimiento y la experiencia de usuario.",
+    "Construyo productos web de punta a punta: interfaz, API y base de datos, cuidando rendimiento y experiencia de usuario.",
 };
 
 export const focus = ["JavaScript", "TypeScript", "React", "Node.js"];
 
-// Lista amplia de lenguajes de programación (a modo de referencia general).
-// Edita esta lista para dejar solo los que realmente dominas.
-export const languages = [
-  "JavaScript",
-  "TypeScript",
-  "Python",
-  "Java",
-  "C",
-  "C++",
-  "C#",
-  "Go",
-  "Rust",
-  "PHP",
-  "Ruby",
-  "Swift",
-  "Kotlin",
-  "Dart",
-  "SQL",
-  "HTML",
-  "CSS",
-  "Bash / Shell",
-  "R",
-  "MATLAB",
-  "Scala",
-  "Perl",
-  "Lua",
-  "Haskell",
-  "Elixir",
-  "Objective-C",
-  "F#",
-  "Julia",
-  "Groovy",
-  "VBA",
+export type Skill = {
+  name: string;
+  icon: IconType;
+  color: string;
+};
+
+// Stack principal: edita para reflejar lo que realmente dominas.
+export const skills: Skill[] = [
+  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+  { name: "React", icon: SiReact, color: "#61DAFB" },
+  { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF" },
+  { name: "Node.js", icon: SiNodedotjs, color: "#5FA04E" },
+  { name: "Express", icon: SiExpress, color: "#FFFFFF" },
+  { name: "Python", icon: SiPython, color: "#3776AB" },
+  { name: "Java", icon: SiOpenjdk, color: "#E76F00" },
+  { name: "C++", icon: SiCplusplus, color: "#00599C" },
+  { name: "Go", icon: SiGo, color: "#00ADD8" },
+  { name: "HTML5", icon: FaHtml5, color: "#E34F26" },
+  { name: "CSS3", icon: FaCss3Alt, color: "#1572B6" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "#38BDF8" },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
+  { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
+  { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
+  { name: "Docker", icon: SiDocker, color: "#2496ED" },
+  { name: "Git", icon: SiGit, color: "#F05032" },
+  { name: "GitHub", icon: SiGithub, color: "#FFFFFF" },
 ];
 
 export type Project = {
