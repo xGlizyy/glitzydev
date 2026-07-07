@@ -96,9 +96,8 @@ export const projects: Project[] = [
   },
 ];
 
-// Placeholders: sustituye por tus datos reales de contacto.
 export const contact = {
-  email: "tu@email.com",
-  github: "https://github.com/tu-usuario",
+  email: "contact.glitzydev@proton.me",
+  github: "https://github.com/xGlizyy",
   linkedin: "https://linkedin.com/in/tu-usuario",
 };
