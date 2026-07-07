@@ -28,33 +28,36 @@ export const profile = {
     "Construyo productos web de punta a punta: interfaz, API y base de datos, cuidando rendimiento y experiencia de usuario.",
 };
 
+export type SkillCategory = "Frontend" | "Backend" | "Herramientas";
+
 export type Skill = {
   name: string;
   icon: IconType;
   color: string;
+  category: SkillCategory;
 };
 
 // Stack principal: edita para reflejar lo que realmente dominas.
 export const skills: Skill[] = [
-  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
-  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-  { name: "React", icon: SiReact, color: "#61DAFB" },
-  { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF" },
-  { name: "Node.js", icon: SiNodedotjs, color: "#5FA04E" },
-  { name: "Express", icon: SiExpress, color: "#FFFFFF" },
-  { name: "Python", icon: SiPython, color: "#3776AB" },
-  { name: "Java", icon: SiOpenjdk, color: "#E76F00" },
-  { name: "C++", icon: SiCplusplus, color: "#00599C" },
-  { name: "Go", icon: SiGo, color: "#00ADD8" },
-  { name: "HTML5", icon: FaHtml5, color: "#E34F26" },
-  { name: "CSS3", icon: FaCss3Alt, color: "#1572B6" },
-  { name: "Tailwind CSS", icon: SiTailwindcss, color: "#38BDF8" },
-  { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
-  { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
-  { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
-  { name: "Docker", icon: SiDocker, color: "#2496ED" },
-  { name: "Git", icon: SiGit, color: "#F05032" },
-  { name: "GitHub", icon: SiGithub, color: "#FFFFFF" },
+  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", category: "Frontend" },
+  { name: "TypeScript", icon: SiTypescript, color: "#3178C6", category: "Frontend" },
+  { name: "React", icon: SiReact, color: "#61DAFB", category: "Frontend" },
+  { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF", category: "Frontend" },
+  { name: "HTML5", icon: FaHtml5, color: "#E34F26", category: "Frontend" },
+  { name: "CSS3", icon: FaCss3Alt, color: "#1572B6", category: "Frontend" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "#38BDF8", category: "Frontend" },
+  { name: "Node.js", icon: SiNodedotjs, color: "#5FA04E", category: "Backend" },
+  { name: "Express", icon: SiExpress, color: "#FFFFFF", category: "Backend" },
+  { name: "Python", icon: SiPython, color: "#3776AB", category: "Backend" },
+  { name: "Java", icon: SiOpenjdk, color: "#E76F00", category: "Backend" },
+  { name: "C++", icon: SiCplusplus, color: "#00599C", category: "Backend" },
+  { name: "Go", icon: SiGo, color: "#00ADD8", category: "Backend" },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1", category: "Backend" },
+  { name: "MongoDB", icon: SiMongodb, color: "#47A248", category: "Backend" },
+  { name: "GraphQL", icon: SiGraphql, color: "#E10098", category: "Backend" },
+  { name: "Docker", icon: SiDocker, color: "#2496ED", category: "Herramientas" },
+  { name: "Git", icon: SiGit, color: "#F05032", category: "Herramientas" },
+  { name: "GitHub", icon: SiGithub, color: "#FFFFFF", category: "Herramientas" },
 ];
 
 export type Project = {
