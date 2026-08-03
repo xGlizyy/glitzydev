@@ -66,12 +66,21 @@ function parseSenses(block: string): DictSense[] {
   let current: DictSense | null = null;
   let collecting = false;
 
-  const splitList = (raw: string) =>
-    raw
-      .replace(/\.$/, "")
+  // Instead of a real comma-separated list, Wiktionary often leaves a
+  // "véase X en nuestro tesauro" (or similar) placeholder when no synonyms
+  // are documented yet. That text isn't a word, so it must never end up as
+  // a clickable chip.
+  const PLACEHOLDER_NOTE = /v[eé]ase|tesauro|no (?:se )?(?:han?|hay) encontrad/i;
+
+  const splitList = (raw: string) => {
+    const cleaned = raw.replace(/\.$/, "").trim();
+    if (!cleaned || PLACEHOLDER_NOTE.test(cleaned)) return [];
+    return cleaned
       .split(",")
       .map((s) => s.trim())
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((s) => !PLACEHOLDER_NOTE.test(s));
+  };
 
   for (const line of lines) {
     if (!line) continue;
@@ -99,7 +108,7 @@ function parseSenses(block: string): DictSense[] {
     } else if (exampleMatch) {
       current.example = exampleMatch[1].trim();
       collecting = false;
-    } else if (/^(Uso|V[eé]ase|Nota|Cultismo|Etimolog[ií]a)\s*:/i.test(line)) {
+    } else if (/^(Uso|V[eé]ase|Nota|Cultismo|Etimolog[ií]a|Relacionado)\s*:/i.test(line)) {
       collecting = false;
     } else if (collecting) {
       current.definition = current.definition ? `${current.definition} ${line}` : line;
