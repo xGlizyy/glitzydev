@@ -27,7 +27,6 @@ body {
 }
 
 .glass {
-  position: relative;
   isolation: isolate;
   background: linear-gradient(
     165deg,
