@@ -4,6 +4,7 @@ import "./globals.css";
 import Background from "@/app/components/Background";
 import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
+import { createClient } from "@/lib/supabase/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,11 +21,16 @@ export const metadata: Metadata = {
   description: "Busca definiciones, sinónimos y antónimos en español e inglés.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html
       lang="es"
@@ -32,7 +38,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black text-zinc-50">
         <Background />
-        <Nav />
+        <Nav userEmail={user?.email ?? null} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
