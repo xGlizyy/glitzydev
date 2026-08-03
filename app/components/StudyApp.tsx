@@ -122,6 +122,8 @@ export default function StudyApp() {
               key={tab.id}
               type="button"
               onClick={() => switchMode(tab.id)}
+              onPointerEnter={glow.onPointerEnter}
+              onPointerLeave={glow.onPointerLeave}
               className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
                 mode === tab.id ? "text-orange-300" : "text-zinc-500 hover:text-zinc-300"
               }`}
@@ -208,12 +210,18 @@ export default function StudyApp() {
                     <button
                       type="button"
                       onClick={() => toggleAnswer(i)}
+                      onPointerEnter={glow.onPointerEnter}
+                      onPointerLeave={glow.onPointerLeave}
                       className="text-xs font-medium text-orange-300 hover:text-orange-200"
                     >
                       {openAnswers.has(i) ? "Ocultar respuesta" : "Ver respuesta"}
                     </button>
                     {openAnswers.has(i) && (
-                      <p className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-zinc-400">
+                      <p
+                        onPointerEnter={glow.onPointerEnter}
+                        onPointerLeave={glow.onPointerLeave}
+                        className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-zinc-400"
+                      >
                         {q.answer}
                       </p>
                     )}
