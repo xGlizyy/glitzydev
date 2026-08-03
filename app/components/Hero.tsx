@@ -1,18 +1,41 @@
 "use client";
 
+import type { PointerEvent } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "motion/react";
+import { FiArrowUpRight } from "react-icons/fi";
 
 const floatingChips = [
-  { label: "Sinónimo", top: "8%", left: "-6%", delay: 0 },
-  { label: "Antónimo", top: "72%", left: "-10%", delay: 0.6 },
-  { label: "ES ⇄ EN", top: "4%", left: "78%", delay: 0.3 },
-  { label: "Definición", top: "80%", left: "70%", delay: 0.9 },
+  { label: "Sinónimo", top: "6%", left: "-8%", delay: 0 },
+  { label: "Antónimo", top: "74%", left: "-12%", delay: 0.6 },
+  { label: "ES ⇄ EN", top: "2%", left: "80%", delay: 0.3 },
+  { label: "Definición", top: "82%", left: "72%", delay: 0.9 },
 ];
 
 export default function Hero() {
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springX = useSpring(rotateX, { stiffness: 220, damping: 20 });
+  const springY = useSpring(rotateY, { stiffness: 220, damping: 20 });
+  const glareX = useTransform(springY, [-10, 10], ["0%", "100%"]);
+  const glareY = useTransform(springX, [10, -10], ["0%", "100%"]);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(251,146,60,0.18), transparent 55%)`;
+
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    rotateY.set(px * 16);
+    rotateX.set(-py * 16);
+  }
+
+  function handlePointerLeave() {
+    rotateX.set(0);
+    rotateY.set(0);
+  }
+
   return (
-    <section className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 pb-20 pt-40 text-center">
+    <section className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 pb-24 pt-40 text-center">
       <motion.span
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -26,10 +49,10 @@ export default function Hero() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl"
+        className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 sm:text-6xl"
       >
         Encuentra la palabra exacta,{" "}
-        <span className="bg-gradient-to-r from-orange-300 to-orange-500 bg-clip-text text-transparent">
+        <span className="bg-gradient-to-r from-orange-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">
           al instante
         </span>
       </motion.h1>
@@ -50,25 +73,30 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex flex-wrap items-center justify-center gap-3"
       >
-        <Link
-          href="/registro"
-          className="rounded-full bg-orange-500 px-6 py-2.5 text-sm font-medium text-black transition hover:bg-orange-400"
-        >
-          Crear cuenta gratis
-        </Link>
-        <Link
-          href="/buscar"
-          className="rounded-full border border-white/15 px-6 py-2.5 text-sm font-medium text-zinc-200 transition hover:border-orange-400/40 hover:text-orange-300"
-        >
-          Probar el buscador
-        </Link>
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+          <Link
+            href="/registro"
+            className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 px-6 py-2.5 text-sm font-semibold text-black shadow-lg shadow-orange-500/20 transition hover:shadow-orange-500/40"
+          >
+            Crear cuenta gratis
+            <FiArrowUpRight />
+          </Link>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+          <Link
+            href="/buscar"
+            className="glass glass-hover flex items-center rounded-full px-6 py-2.5 text-sm font-medium text-zinc-200"
+          >
+            Probar el buscador
+          </Link>
+        </motion.div>
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="relative mt-14 w-full max-w-lg"
+        className="relative mt-16 w-full max-w-lg [perspective:1200px]"
       >
         {floatingChips.map((chip) => (
           <motion.span
@@ -83,17 +111,24 @@ export default function Hero() {
         ))}
 
         <motion.div
-          whileHover={{ rotateX: -2, rotateY: 3, scale: 1.01 }}
-          style={{ transformStyle: "preserve-3d" }}
-          className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-left shadow-2xl shadow-black/40 backdrop-blur-xl"
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
+          style={{ rotateX: springX, rotateY: springY, transformStyle: "preserve-3d" }}
+          className="glass relative overflow-hidden rounded-3xl p-6 text-left"
         >
-          <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-60"
+            style={{ background: glareBackground }}
+          />
+
+          <div className="relative flex items-center gap-2 border-b border-white/10 pb-3">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
             <span className="ml-3 text-xs text-zinc-500">buscador.diccionario</span>
           </div>
-          <div className="mt-4 space-y-3">
+          <div className="relative mt-4 space-y-3">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-semibold text-zinc-50">grande</span>
               <span className="text-xs text-zinc-500">adjetivo</span>

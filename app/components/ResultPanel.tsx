@@ -31,7 +31,7 @@ export default function ResultPanel({
   }
 
   return (
-    <div className="space-y-6 rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl sm:p-8">
+    <div className="glass space-y-6 rounded-3xl p-6 sm:p-8">
       <div>
         <div className="flex flex-wrap items-baseline gap-3">
           <h2 className="text-3xl font-semibold text-zinc-50">{entry.word}</h2>

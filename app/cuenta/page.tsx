@@ -58,7 +58,7 @@ export default async function CuentaPage() {
             {favorites.map((fav) => (
               <li
                 key={fav.id}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                className="glass glass-hover flex items-center justify-between gap-3 rounded-2xl px-4 py-3"
               >
                 <Link
                   href={`/buscar?q=${encodeURIComponent(fav.word)}`}

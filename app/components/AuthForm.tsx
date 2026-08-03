@@ -19,7 +19,7 @@ export default function AuthForm({
   });
 
   return (
-    <form action={formAction} className="w-full max-w-sm space-y-4">
+    <form action={formAction} className="glass w-full max-w-sm space-y-4 rounded-3xl p-6 sm:p-8">
       {notice && (
         <p className="rounded-2xl border border-orange-400/30 bg-orange-400/10 px-4 py-3 text-sm text-orange-200">
           {notice}
@@ -36,7 +36,7 @@ export default function AuthForm({
           type="email"
           required
           autoComplete="email"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-orange-400/50"
+          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-orange-400/50"
         />
       </div>
 
@@ -54,7 +54,7 @@ export default function AuthForm({
           required
           minLength={6}
           autoComplete="current-password"
-          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-zinc-100 outline-none transition focus:border-orange-400/50"
+          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-orange-400/50"
         />
       </div>
 
@@ -63,7 +63,7 @@ export default function AuthForm({
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-orange-500 px-5 py-2.5 text-sm font-medium text-black transition hover:bg-orange-400 disabled:opacity-40"
+        className="w-full rounded-full bg-gradient-to-r from-orange-400 to-amber-500 px-5 py-2.5 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-40"
       >
         {pending ? pendingLabel : submitLabel}
       </button>

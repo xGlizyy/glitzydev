@@ -20,7 +20,7 @@ export default function SearchBar({
         const word = value.trim();
         if (word) onSearch(word);
       }}
-      className="flex w-full max-w-xl items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-2 backdrop-blur-xl transition focus-within:border-orange-400/50"
+      className="glass flex w-full max-w-xl items-center gap-2 rounded-full p-2 transition-colors focus-within:border-orange-400/50"
     >
       <input
         value={value}
@@ -32,7 +32,7 @@ export default function SearchBar({
       <button
         type="submit"
         disabled={loading || !value.trim()}
-        className="rounded-full bg-orange-500 px-5 py-2 text-sm font-medium text-black transition hover:bg-orange-400 disabled:opacity-40"
+        className="rounded-full bg-gradient-to-r from-orange-400 to-amber-500 px-5 py-2 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-40"
       >
         {loading ? "Buscando…" : "Buscar"}
       </button>

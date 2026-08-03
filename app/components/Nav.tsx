@@ -1,12 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { signOut } from "@/lib/auth/actions";
+import AccountMenu from "@/app/components/AccountMenu";
+
+const links = [{ href: "/buscar", label: "Buscar" }];
 
 export default function Nav({ userEmail }: { userEmail: string | null }) {
+  const [hovered, setHovered] = useState<string | null>(null);
+
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl">
+    <header className="glass fixed top-0 z-50 w-full rounded-none">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
           <motion.span
@@ -19,46 +24,28 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
           <span className="text-sm font-medium text-zinc-300">Diccionario</span>
         </Link>
 
-        <div className="flex items-center gap-2 text-sm">
-          <Link
-            href="/buscar"
-            className="rounded-full px-4 py-1.5 text-zinc-400 transition hover:text-orange-300"
-          >
-            Buscar
-          </Link>
-          {userEmail ? (
-            <>
-              <Link
-                href="/cuenta"
-                className="rounded-full px-4 py-1.5 text-zinc-400 transition hover:text-orange-300"
-              >
-                Mi cuenta
-              </Link>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="rounded-full border border-white/10 px-4 py-1.5 text-zinc-400 transition hover:border-orange-400/40 hover:text-orange-300"
-                >
-                  Cerrar sesión
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="rounded-full px-4 py-1.5 text-zinc-400 transition hover:text-orange-300"
-              >
-                Iniciar sesión
-              </Link>
-              <Link
-                href="/registro"
-                className="rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-orange-300 transition hover:bg-orange-400/20"
-              >
-                Registrarse
-              </Link>
-            </>
-          )}
+        <div className="flex items-center gap-1 text-sm">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onMouseEnter={() => setHovered(link.href)}
+              onMouseLeave={() => setHovered(null)}
+              className="relative rounded-full px-4 py-1.5 text-zinc-400 transition-colors hover:text-orange-300"
+            >
+              {hovered === link.href && (
+                <motion.span
+                  layoutId="nav-hover-pill"
+                  className="absolute inset-0 rounded-full border border-orange-400/30 bg-orange-400/10"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
+              <span className="relative z-10">{link.label}</span>
+            </Link>
+          ))}
+          <div className="ml-2">
+            <AccountMenu userEmail={userEmail} />
+          </div>
         </div>
       </nav>
     </header>

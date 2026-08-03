@@ -9,9 +9,9 @@ export default function PageTransition({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as const }}
+      initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ type: "spring", stiffness: 260, damping: 30, mass: 0.7 }}
     >
       {children}
     </motion.div>
