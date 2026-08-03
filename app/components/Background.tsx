@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 
@@ -25,8 +26,22 @@ export default function Background() {
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
-      <div className="animate-blob absolute left-1/2 top-[-14rem] h-[40rem] w-[40rem] -translate-x-1/2 rounded-full bg-orange-500/15 blur-[130px]" />
-      <div className="animate-blob animation-delay-4000 absolute bottom-[-16rem] left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-orange-400/10 blur-[130px]" />
+      {/* Scaled up so the blurred edges are clipped outside the viewport */}
+      <div className="absolute inset-0 scale-110">
+        <Image
+          src="/foto-fondo.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover blur-[10px]"
+        />
+      </div>
+
+      {/* Darkening wash so text and glass panels stay readable over the photo */}
+      <div className="absolute inset-0 bg-black/55" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black/85" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-orange-950/40 via-transparent to-black/30" />
 
       {/* Soft trailing glow: lags slightly behind the pointer for a fluid feel */}
       <motion.div
