@@ -6,11 +6,18 @@ import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } fr
 import { FiArrowUpRight } from "react-icons/fi";
 
 const floatingChips = [
-  { label: "Sinónimo", top: "6%", left: "-8%", delay: 0 },
-  { label: "Antónimo", top: "74%", left: "-12%", delay: 0.6 },
-  { label: "ES ⇄ EN", top: "2%", left: "80%", delay: 0.3 },
-  { label: "Definición", top: "82%", left: "72%", delay: 0.9 },
-];
+  { label: "Sinónimo", corner: "tl", delay: 0 },
+  { label: "Antónimo", corner: "bl", delay: 0.6 },
+  { label: "ES ⇄ EN", corner: "tr", delay: 0.3 },
+  { label: "Definición", corner: "br", delay: 0.9 },
+] as const;
+
+const cornerClasses: Record<(typeof floatingChips)[number]["corner"], string> = {
+  tl: "left-0 top-0 -translate-x-1/2 -translate-y-1/2",
+  bl: "left-0 bottom-0 -translate-x-1/2 translate-y-1/2",
+  tr: "right-0 top-0 translate-x-1/2 -translate-y-1/2",
+  br: "right-0 bottom-0 translate-x-1/2 translate-y-1/2",
+};
 
 export default function Hero() {
   const rotateX = useMotionValue(0);
@@ -96,18 +103,21 @@ export default function Hero() {
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="relative mt-16 w-full max-w-lg [perspective:1200px]"
+        className="relative mt-16 w-full max-w-lg p-9 [perspective:1200px]"
       >
         {floatingChips.map((chip) => (
-          <motion.span
+          <div
             key={chip.label}
-            className="absolute hidden rounded-full border border-orange-400/25 bg-orange-400/10 px-3 py-1 text-xs text-orange-200 backdrop-blur-md sm:block"
-            style={{ top: chip.top, left: chip.left }}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, delay: chip.delay, ease: "easeInOut" }}
+            className={`absolute z-20 hidden sm:block ${cornerClasses[chip.corner]}`}
           >
-            {chip.label}
-          </motion.span>
+            <motion.span
+              className="block whitespace-nowrap rounded-full border border-orange-400/25 bg-orange-400/10 px-3 py-1 text-xs text-orange-200 backdrop-blur-md"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, delay: chip.delay, ease: "easeInOut" }}
+            >
+              {chip.label}
+            </motion.span>
+          </div>
         ))}
 
         <motion.div

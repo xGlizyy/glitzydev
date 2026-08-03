@@ -30,16 +30,16 @@ export default function Background() {
 
       {/* Soft trailing glow: lags slightly behind the pointer for a fluid feel */}
       <motion.div
-        className="pointer-events-none absolute h-[34rem] w-[34rem] rounded-full bg-orange-500/10 blur-[120px]"
+        className="cursor-glow pointer-events-none absolute h-[34rem] w-[34rem] rounded-full bg-orange-500/10 blur-[120px]"
         style={{ left: trailX, top: trailY, translateX: "-50%", translateY: "-50%" }}
       />
       {/* Sharper glow that tracks the cursor closely */}
       <motion.div
-        className="pointer-events-none absolute h-[22rem] w-[22rem] rounded-full bg-orange-400/20 blur-[90px] mix-blend-screen"
+        className="cursor-glow pointer-events-none absolute h-[22rem] w-[22rem] rounded-full bg-orange-400/20 blur-[90px] mix-blend-screen"
         style={{ left: fastX, top: fastY, translateX: "-50%", translateY: "-50%" }}
       />
       <motion.div
-        className="pointer-events-none absolute h-[6rem] w-[6rem] rounded-full bg-orange-300/30 blur-[40px] mix-blend-screen"
+        className="cursor-glow pointer-events-none absolute h-[6rem] w-[6rem] rounded-full bg-orange-300/30 blur-[40px] mix-blend-screen"
         style={{ left: fastX, top: fastY, translateX: "-50%", translateY: "-50%" }}
       />
 

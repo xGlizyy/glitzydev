@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 
 export default function SearchBar({
   onSearch,
@@ -12,6 +13,7 @@ export default function SearchBar({
   initialValue?: string;
 }) {
   const [value, setValue] = useState(initialValue);
+  const glow = useGlowSuppression();
 
   return (
     <form
@@ -20,6 +22,8 @@ export default function SearchBar({
         const word = value.trim();
         if (word) onSearch(word);
       }}
+      onPointerEnter={glow.onPointerEnter}
+      onPointerLeave={glow.onPointerLeave}
       className="glass flex w-full max-w-xl items-center gap-2 rounded-full p-2 transition-colors focus-within:border-orange-400/50"
     >
       <input

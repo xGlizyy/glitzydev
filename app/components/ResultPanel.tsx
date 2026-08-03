@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { DictionaryEntry } from "@/lib/dictionary/types";
 import WordChips from "@/app/components/WordChips";
+import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 
 export default function ResultPanel({
   entry,
@@ -15,6 +16,7 @@ export default function ResultPanel({
 }) {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const glow = useGlowSuppression();
 
   async function toggleFavorite() {
     setSaving(true);
@@ -31,7 +33,11 @@ export default function ResultPanel({
   }
 
   return (
-    <div className="glass space-y-6 rounded-3xl p-6 sm:p-8">
+    <div
+      onPointerEnter={glow.onPointerEnter}
+      onPointerLeave={glow.onPointerLeave}
+      className="glass space-y-6 rounded-3xl p-6 sm:p-8"
+    >
       <div>
         <div className="flex flex-wrap items-baseline gap-3">
           <h2 className="text-3xl font-semibold text-zinc-50">{entry.word}</h2>

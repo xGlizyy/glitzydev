@@ -85,3 +85,11 @@ body {
 .animate-shine {
   animation: shine 6s linear infinite;
 }
+
+.cursor-glow {
+  transition: opacity 0.35s ease;
+}
+
+body[data-glow-suppressed="true"] .cursor-glow {
+  opacity: 0;
+}
