@@ -136,12 +136,12 @@ export default function Hero() {
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
-            <span className="ml-3 text-xs text-zinc-500">buscador.diccionario</span>
+            <span className="ml-3 text-xs text-zinc-500">aprendeconwordexa</span>
           </div>
           <div className="relative mt-4 space-y-3">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-semibold text-zinc-50">grande</span>
-              <span className="text-xs text-zinc-500">adjetivo</span>
+              <span className="text-2xl font-semibold text-zinc-50">Grande</span>
+              <span className="text-xs text-zinc-500">Adjetivo</span>
             </div>
             <p className="text-sm text-zinc-400">
               Superior en tamaño a un determinado patrón tomado como medida.
