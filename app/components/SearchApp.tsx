@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { motion } from "motion/react";
 import SearchBar from "@/app/components/SearchBar";
 import ResultPanel from "@/app/components/ResultPanel";
 import type { LookupResponse } from "@/lib/dictionary/types";
@@ -58,16 +59,20 @@ export default function SearchApp({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const hasResult = status !== "idle";
+
   return (
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-36">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">Buscar una palabra</h1>
-        <p className="mx-auto mt-4 max-w-md rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-zinc-400">
-          Español e inglés · definiciones, sinónimos y antónimos en un mismo lugar.
-        </p>
-      </div>
-
-      <SearchBar onSearch={search} loading={status === "loading"} initialValue={lastQuery} />
+      <motion.div
+        animate={{ marginTop: hasResult ? 0 : "8vh" }}
+        transition={{ type: "spring", stiffness: 260, damping: 30, mass: 0.7 }}
+        className="flex w-full flex-col items-center gap-10"
+      >
+        <h1 className="text-center text-2xl font-semibold text-zinc-50 sm:text-3xl">
+          Buscar una palabra
+        </h1>
+        <SearchBar onSearch={search} loading={status === "loading"} initialValue={lastQuery} />
+      </motion.div>
 
       {status === "error" && (
         <p className="text-sm text-red-400">
