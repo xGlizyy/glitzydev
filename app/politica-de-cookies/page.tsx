@@ -43,7 +43,7 @@ export default function CookiePolicyPage() {
         <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
           <table className="w-full min-w-[560px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-wide text-zinc-500">
+              <tr className="border-b border-white/10 bg-white/5 text-xs uppercase tracking-wide text-white">
                 <th className="px-4 py-3 font-medium">Categoría</th>
                 <th className="px-4 py-3 font-medium">Cookies</th>
                 <th className="px-4 py-3 font-medium">Finalidad</th>
