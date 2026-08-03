@@ -6,7 +6,10 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import AccountMenu from "@/app/components/AccountMenu";
 
-const links = [{ href: "/buscar", label: "Buscar" }];
+const links = [
+  { href: "/buscar", label: "Buscar" },
+  { href: "/resumen", label: "Resúmenes" },
+];
 
 export default function Nav({ userEmail }: { userEmail: string | null }) {
   const [hovered, setHovered] = useState<string | null>(null);
