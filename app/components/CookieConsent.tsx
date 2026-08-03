@@ -61,7 +61,7 @@ export default function CookieConsent({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="glass w-full max-w-sm rounded-2xl p-5 sm:max-w-md"
+            className="glass w-full max-w-sm rounded-2xl p-5 sm:max-w-lg"
           >
             {!panelOpen ? (
               <>
@@ -80,11 +80,11 @@ export default function CookieConsent({
                     .
                   </p>
                 </div>
-                <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <div className="mt-4 -mx-1 flex flex-nowrap justify-end gap-1.5 overflow-x-auto px-1 pb-1">
                   <button
                     type="button"
                     onClick={() => setPanelOpen(true)}
-                    className="rounded-full border border-white/10 px-4 py-1.5 text-sm text-zinc-300 transition hover:border-orange-400/40 hover:text-orange-300"
+                    className="shrink-0 whitespace-nowrap rounded-full border border-white/10 px-3 py-1.5 text-xs text-zinc-300 transition hover:border-orange-400/40 hover:text-orange-300 sm:text-sm"
                   >
                     Personalizar
                   </button>
@@ -92,7 +92,7 @@ export default function CookieConsent({
                     type="button"
                     disabled={isPending}
                     onClick={() => persist(REJECT_ALL)}
-                    className="rounded-full border border-white/10 px-4 py-1.5 text-sm text-zinc-300 transition hover:border-orange-400/40 hover:text-orange-300 disabled:opacity-50"
+                    className="shrink-0 whitespace-nowrap rounded-full border border-white/10 px-3 py-1.5 text-xs text-zinc-300 transition hover:border-orange-400/40 hover:text-orange-300 disabled:opacity-50 sm:text-sm"
                   >
                     Rechazar no esenciales
                   </button>
@@ -100,7 +100,7 @@ export default function CookieConsent({
                     type="button"
                     disabled={isPending}
                     onClick={() => persist(ACCEPT_ALL)}
-                    className="rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 transition hover:bg-orange-400/20 disabled:opacity-50"
+                    className="shrink-0 whitespace-nowrap rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1.5 text-xs font-medium text-orange-300 transition hover:bg-orange-400/20 disabled:opacity-50 sm:text-sm"
                   >
                     Aceptar todas
                   </button>
