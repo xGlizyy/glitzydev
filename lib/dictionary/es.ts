@@ -4,7 +4,7 @@ const USER_AGENT =
   "SobreMiDiccionario/1.0 (https://github.com/; contacto: samueq3fh5gt@gmail.com)";
 
 const POS_ALLOW =
-  /^(Sustantivo|Adjetivo|Verbo|Adverbio|Pronombre|Preposici[oó]n|Conjunci[oó]n|Interjecci[oó]n|Art[ií]culo|Numeral)/i;
+  /^(Sustantivo|Adjetivo|Verbo|Adverbio|Pronombre|Preposici[oó]n|Conjunci[oó]n|Interjecci[oó]n|Art[ií]culo|Numeral|Forma)/i;
 
 function decodeEntities(text: string): string {
   return text
@@ -134,7 +134,7 @@ export async function fetchSpanishEntry(word: string): Promise<DictionaryEntry |
         .find(Boolean);
       if (firstLine && !/^(Si puedes|V[eé]ase)/i.test(firstLine)) etymology = firstLine;
     }
-    if (header.level === 4 && POS_ALLOW.test(header.title)) {
+    if ((header.level === 3 || header.level === 4) && POS_ALLOW.test(header.title)) {
       const content = spanishSection.slice(header.start, header.end);
       const senses = parseSenses(content);
       if (senses.length) blocks.push({ partOfSpeech: header.title, senses });
