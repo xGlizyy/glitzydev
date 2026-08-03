@@ -25,7 +25,7 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
               alt="Wordexa"
               fill
               sizes="36px"
-              className="scale-125 object-contain"
+              className="scale-90 object-contain"
             />
           </motion.span>
           <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Wordexa</span>
