@@ -39,9 +39,9 @@ export default function Background() {
       </div>
 
       {/* Darkening wash so text and glass panels stay readable over the photo */}
-      <div className="absolute inset-0 bg-black/55" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black/85" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-orange-950/40 via-transparent to-black/30" />
+      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/25 to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-orange-950/25 via-transparent to-black/15" />
 
       {/* Soft trailing glow: lags slightly behind the pointer for a fluid feel */}
       <motion.div
@@ -65,7 +65,7 @@ export default function Background() {
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70" />
     </div>
   );
 }
