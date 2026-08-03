@@ -62,7 +62,7 @@ export default function SearchApp({
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-36">
       <div className="text-center">
         <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">Buscar una palabra</h1>
-        <p className="mt-3 text-sm text-zinc-500">
+        <p className="mx-auto mt-4 max-w-md rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-zinc-400">
           Español e inglés · definiciones, sinónimos y antónimos en un mismo lugar.
         </p>
       </div>

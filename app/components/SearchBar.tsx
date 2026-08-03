@@ -30,7 +30,7 @@ export default function SearchBar({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Escribe una palabra en español o inglés…"
-        className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+        className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder:text-white focus:outline-none"
         autoFocus
       />
       <button
