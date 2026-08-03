@@ -39,7 +39,7 @@ export default async function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black text-zinc-50">
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-black text-zinc-50">
         <Background />
         <Nav userEmail={user?.email ?? null} />
         <main className="flex-1">{children}</main>

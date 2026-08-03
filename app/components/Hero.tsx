@@ -103,7 +103,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="relative mt-16 w-full max-w-lg p-9 [perspective:1200px]"
+        className="relative mt-16 w-full max-w-lg p-2 [perspective:1200px] sm:p-9"
       >
         {floatingChips.map((chip) => (
           <div

@@ -40,7 +40,7 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
         type="button"
         onClick={() => setOpen((v) => !v)}
         whileTap={{ scale: 0.96 }}
-        className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+        className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:text-sm ${
           userEmail
             ? "border-white/10 text-zinc-300 hover:border-orange-400/40 hover:text-orange-300"
             : "border-orange-400/30 bg-orange-400/10 text-orange-300 hover:bg-orange-400/20"
@@ -53,7 +53,7 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
         ) : (
           <FiUser className="text-base" />
         )}
-        <span>{userEmail ? "Mi cuenta" : "Acceder"}</span>
+        <span className="hidden sm:inline">{userEmail ? "Mi cuenta" : "Acceder"}</span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
           <FiChevronDown className="text-sm" />
         </motion.span>
@@ -66,7 +66,7 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className="glass absolute right-4 top-full mt-3 w-52 overflow-hidden rounded-2xl p-1.5 sm:right-5"
+            className="glass absolute right-3 top-full mt-3 w-52 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl p-1.5 sm:right-5"
           >
             {userEmail ? (
               <>
