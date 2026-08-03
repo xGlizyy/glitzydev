@@ -4,7 +4,9 @@ import "./globals.css";
 import Background from "@/app/components/Background";
 import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
+import CookieConsent from "@/app/components/CookieConsent";
 import { createClient } from "@/lib/supabase/server";
+import { getCookieConsent } from "@/lib/cookies/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +32,7 @@ export default async function RootLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const cookieConsent = await getCookieConsent();
 
   return (
     <html
@@ -41,6 +44,7 @@ export default async function RootLayout({
         <Nav userEmail={user?.email ?? null} />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieConsent initialConsent={cookieConsent} />
       </body>
     </html>
   );
