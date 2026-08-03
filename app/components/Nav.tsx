@@ -19,9 +19,9 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
             whileTap={{ scale: 0.94 }}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-orange-400/40 bg-orange-400/10 text-sm font-semibold text-orange-300"
           >
-            Dx
+            W
           </motion.span>
-          <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Diccionario</span>
+          <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Wordexa</span>
         </Link>
 
         <div className="flex items-center gap-1 text-sm">
