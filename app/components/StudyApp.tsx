@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type ClipboardEvent, type FormEvent } from "react";
 import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import type { StudyPack } from "@/lib/study/types";
 
@@ -8,6 +8,10 @@ type Status = "idle" | "loading" | "error" | "done";
 type Mode = "pdf" | "text";
 
 const MIN_TEXT_LENGTH = 40;
+
+function normalizePastedText(raw: string): string {
+  return raw.replace(/\s+/g, " ").trim();
+}
 
 export default function StudyApp() {
   const [mode, setMode] = useState<Mode>("pdf");
@@ -21,6 +25,24 @@ export default function StudyApp() {
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     setFile(event.target.files?.[0] ?? null);
+  }
+
+  function handleTextPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
+    const pasted = event.clipboardData.getData("text");
+    if (!pasted) return;
+    event.preventDefault();
+
+    const cleaned = normalizePastedText(pasted);
+    const target = event.currentTarget;
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
+    const nextValue = text.slice(0, start) + cleaned + text.slice(end);
+    setText(nextValue);
+
+    const cursorPos = start + cleaned.length;
+    requestAnimationFrame(() => {
+      target.setSelectionRange(cursorPos, cursorPos);
+    });
   }
 
   function switchMode(next: Mode) {
@@ -130,6 +152,7 @@ export default function StudyApp() {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
+              onPaste={handleTextPaste}
               placeholder="Pega o escribe aquí tus apuntes…"
               rows={8}
               className="w-full resize-y rounded-2xl border border-white/10 bg-white/5 p-3 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-orange-400/50 focus:outline-none"
