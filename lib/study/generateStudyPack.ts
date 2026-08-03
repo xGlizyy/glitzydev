@@ -73,7 +73,7 @@ function buildQuestions(
   scored: ScoredSentence[],
   freq: Map<string, number>,
 ): ExamQuestion[] {
-  const targetCount = clamp(Math.round(sentences.length * 0.3), 5, 10);
+  const targetCount = clamp(Math.round(scored.length * 0.4), 5, 40);
   const candidates = [...scored].sort((a, b) => b.score - a.score);
 
   const questions: ExamQuestion[] = [];
