@@ -6,6 +6,13 @@ const USER_AGENT =
 const POS_ALLOW =
   /^(Sustantivo|Adjetivo|Verbo|Adverbio|Pronombre|Preposici[oó]n|Conjunci[oó]n|Interjecci[oó]n|Art[ií]culo|Numeral|Forma)/i;
 
+function stripAccents(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
+}
+
 function decodeEntities(text: string): string {
   return text
     .replace(/&amp;/g, "&")
@@ -102,9 +109,9 @@ function parseSenses(block: string): DictSense[] {
   return senses;
 }
 
-export async function fetchSpanishEntry(word: string): Promise<DictionaryEntry | null> {
+async function fetchExtract(title: string): Promise<{ pageTitle: string; text: string } | null> {
   const url = `https://es.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(
-    word,
+    title,
   )}&prop=extracts&explaintext=1&redirects=1&format=json&formatversion=2`;
 
   const res = await fetch(url, {
@@ -117,7 +124,62 @@ export async function fetchSpanishEntry(word: string): Promise<DictionaryEntry |
   const page = data?.query?.pages?.[0];
   if (!page || page.missing || !page.extract) return null;
 
-  const text = decodeEntities(page.extract as string);
+  return { pageTitle: page.title ?? title, text: decodeEntities(page.extract as string) };
+}
+
+/** "did you mean" style suggestions; good at typos, weak at accent-folding. */
+async function fetchOpenSearchTitles(word: string): Promise<string[]> {
+  const url = `https://es.wiktionary.org/w/api.php?action=opensearch&search=${encodeURIComponent(
+    word,
+  )}&limit=5&namespace=0&format=json`;
+
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": USER_AGENT },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as [string, string[]];
+    return data[1] ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/** Full-text title search; good at accent-folding (e.g. "telefono" -> "teléfono"). */
+async function fetchFullTextTitles(word: string): Promise<string[]> {
+  const url = `https://es.wiktionary.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
+    `intitle:${word}`,
+  )}&srnamespace=0&srlimit=6&format=json&formatversion=2`;
+
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": USER_AGENT },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const results = (data?.query?.search ?? []) as { title: string }[];
+    return results.map((r) => r.title);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Used as a fallback when an exact title lookup misses: combines both
+ * search strategies since they cover different failure modes (typos vs.
+ * missing accents) and neither alone is reliable enough.
+ */
+async function findCandidateTitles(word: string): Promise<string[]> {
+  const [opensearchTitles, fullTextTitles] = await Promise.all([
+    fetchOpenSearchTitles(word),
+    fetchFullTextTitles(word),
+  ]);
+  return Array.from(new Set([...opensearchTitles, ...fullTextTitles]));
+}
+
+function parseEntry(pageTitle: string, text: string): DictionaryEntry | null {
   const spanishSection = extractLevel2Section(text, "Español");
   if (!spanishSection) return null;
 
@@ -151,13 +213,40 @@ export async function fetchSpanishEntry(word: string): Promise<DictionaryEntry |
   );
 
   return {
-    word: page.title ?? word,
+    word: pageTitle,
     language: "es",
     etymology,
     blocks,
     synonyms,
     antonyms,
-    sourceUrl: `https://es.wiktionary.org/wiki/${encodeURIComponent(word)}`,
+    sourceUrl: `https://es.wiktionary.org/wiki/${encodeURIComponent(pageTitle)}`,
     sourceLabel: "Wikcionario en español",
   };
+}
+
+export async function fetchSpanishEntry(word: string): Promise<DictionaryEntry | null> {
+  const direct = await fetchExtract(word);
+  if (direct) {
+    const entry = parseEntry(direct.pageTitle, direct.text);
+    if (entry) return entry;
+  }
+
+  const candidates = await findCandidateTitles(word);
+  const normalizedWord = stripAccents(word);
+  // An accent-insensitive exact match (e.g. "telefono" -> "teléfono") is far
+  // more likely to be what the user meant than a same-prefix superstring
+  // match (e.g. "telefonofobia"), so try those first.
+  const ranked = [...candidates].sort(
+    (a, b) => Number(stripAccents(a) !== normalizedWord) - Number(stripAccents(b) !== normalizedWord),
+  );
+
+  for (const title of ranked) {
+    if (title.toLowerCase() === word.toLowerCase()) continue;
+    const alt = await fetchExtract(title);
+    if (!alt) continue;
+    const entry = parseEntry(alt.pageTitle, alt.text);
+    if (entry) return entry;
+  }
+
+  return null;
 }
