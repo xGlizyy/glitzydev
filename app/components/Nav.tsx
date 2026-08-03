@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import AccountMenu from "@/app/components/AccountMenu";
@@ -17,9 +18,9 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
           <motion.span
             whileHover={{ rotate: -8, scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-orange-400/40 bg-orange-400/10 text-sm font-semibold text-orange-300"
+            className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-orange-400/40 bg-black"
           >
-            W
+            <Image src="/logo-pagina.png" alt="Wordexa" fill sizes="36px" className="object-cover" />
           </motion.span>
           <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Wordexa</span>
         </Link>
