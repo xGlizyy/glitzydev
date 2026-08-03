@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { profile } from "@/lib/data";
 import Background from "@/app/components/Background";
 import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
@@ -17,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.tagline}`,
-  description: profile.about,
+  title: "Diccionario · sinónimos y antónimos",
+  description: "Busca definiciones, sinónimos y antónimos en español e inglés.",
 };
 
 export default function RootLayout({

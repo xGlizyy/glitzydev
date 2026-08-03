@@ -19,7 +19,6 @@ export default function Typewriter({
   const Element = as;
 
   useEffect(() => {
-    setCount(0);
     const id = setInterval(() => {
       setCount((c) => {
         if (c >= text.length) {
