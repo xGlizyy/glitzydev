@@ -31,7 +31,11 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
   }, [open]);
 
   return (
-    <div ref={containerRef} className="relative">
+    // No "relative" here on purpose: the dropdown below anchors to the
+    // nearest positioned ancestor, which is the <nav> itself (see Nav.tsx).
+    // That makes `top-full` land exactly at the header's bottom border
+    // instead of just under this button.
+    <div ref={containerRef}>
       <motion.button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -62,7 +66,7 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className="glass absolute right-0 top-full mt-2 w-52 overflow-hidden rounded-2xl p-1.5"
+            className="glass absolute right-6 top-full mt-3 w-52 overflow-hidden rounded-2xl p-1.5"
           >
             {userEmail ? (
               <>

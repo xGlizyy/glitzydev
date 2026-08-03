@@ -12,7 +12,7 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <nav className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
           <motion.span
             whileHover={{ rotate: -8, scale: 1.08 }}
