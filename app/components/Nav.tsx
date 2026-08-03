@@ -18,9 +18,15 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
           <motion.span
             whileHover={{ rotate: -8, scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
-            className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-orange-400/40 bg-black"
+            className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-orange-400/40 bg-orange-400/10"
           >
-            <Image src="/logo-pagina.png" alt="Wordexa" fill sizes="36px" className="object-cover" />
+            <Image
+              src="/logo-pagina.png"
+              alt="Wordexa"
+              fill
+              sizes="36px"
+              className="scale-125 object-contain"
+            />
           </motion.span>
           <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Wordexa</span>
         </Link>
