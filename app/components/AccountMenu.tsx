@@ -66,7 +66,7 @@ export default function AccountMenu({ userEmail }: { userEmail: string | null })
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className="glass absolute right-6 top-full mt-3 w-52 overflow-hidden rounded-2xl p-1.5"
+            className="glass absolute right-4 top-full mt-3 w-52 overflow-hidden rounded-2xl p-1.5 sm:right-5"
           >
             {userEmail ? (
               <>

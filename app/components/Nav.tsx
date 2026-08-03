@@ -11,8 +11,8 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/40">
-      <nav className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+    <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6">
+      <nav className="nav-shell relative flex w-full max-w-3xl items-center justify-between gap-4 rounded-full px-4 py-2.5 sm:px-5">
         <Link href="/" className="flex items-center gap-2">
           <motion.span
             whileHover={{ rotate: -8, scale: 1.08 }}
@@ -21,7 +21,7 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
           >
             Dx
           </motion.span>
-          <span className="text-sm font-medium text-zinc-300">Diccionario</span>
+          <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Diccionario</span>
         </Link>
 
         <div className="flex items-center gap-1 text-sm">
@@ -43,7 +43,7 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
               <span className="relative z-10">{link.label}</span>
             </Link>
           ))}
-          <div className="ml-2">
+          <div className="ml-1">
             <AccountMenu userEmail={userEmail} />
           </div>
         </div>
