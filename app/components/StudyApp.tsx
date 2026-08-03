@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ChangeEvent, type ClipboardEvent, type FormEvent } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import type { StudyPack } from "@/lib/study/types";
 
@@ -110,29 +111,31 @@ export default function StudyApp() {
       </div>
 
       <div className="flex w-full max-w-xl flex-col items-center gap-4">
-        <div className="flex gap-2 rounded-full border border-white/10 p-1 text-sm">
-          <button
-            type="button"
-            onClick={() => switchMode("pdf")}
-            className={`rounded-full px-4 py-1.5 font-medium transition ${
-              mode === "pdf"
-                ? "bg-orange-400/10 text-orange-300"
-                : "text-zinc-500 hover:text-zinc-300"
-            }`}
-          >
-            Subir PDF
-          </button>
-          <button
-            type="button"
-            onClick={() => switchMode("text")}
-            className={`rounded-full px-4 py-1.5 font-medium transition ${
-              mode === "text"
-                ? "bg-orange-400/10 text-orange-300"
-                : "text-zinc-500 hover:text-zinc-300"
-            }`}
-          >
-            Escribir texto
-          </button>
+        <div className="relative flex gap-2 rounded-full border border-white/10 p-1 text-sm">
+          {(
+            [
+              { id: "pdf", label: "Subir PDF" },
+              { id: "text", label: "Escribir texto" },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => switchMode(tab.id)}
+              className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
+                mode === tab.id ? "text-orange-300" : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              {mode === tab.id && (
+                <motion.span
+                  layoutId="mode-pill"
+                  className="absolute inset-0 rounded-full bg-orange-400/10"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
+              <span className="relative z-10">{tab.label}</span>
+            </button>
+          ))}
         </div>
 
         <form
@@ -141,23 +144,35 @@ export default function StudyApp() {
           onPointerLeave={glow.onPointerLeave}
           className="glass flex w-full flex-col items-center gap-4 rounded-3xl p-6"
         >
-          {mode === "pdf" ? (
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              className="w-full cursor-pointer text-sm text-zinc-300 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-orange-400/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-orange-300 hover:file:bg-orange-400/20"
-            />
-          ) : (
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onPaste={handleTextPaste}
-              placeholder="Pega o escribe aquí tus apuntes…"
-              rows={8}
-              className="w-full resize-y rounded-2xl border border-white/10 bg-white/5 p-3 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-orange-400/50 focus:outline-none"
-            />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {mode === "pdf" ? (
+              <motion.input
+                key="pdf"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileChange}
+                className="w-full cursor-pointer text-sm text-zinc-300 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-orange-400/10 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-orange-300 hover:file:bg-orange-400/20"
+              />
+            ) : (
+              <motion.textarea
+                key="text"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onPaste={handleTextPaste}
+                placeholder="Pega o escribe aquí tus apuntes…"
+                rows={8}
+                className="w-full resize-y rounded-2xl border border-white/10 bg-white/5 p-3 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-orange-400/50 focus:outline-none"
+              />
+            )}
+          </AnimatePresence>
           <button
             type="submit"
             disabled={!canSubmit || status === "loading"}
