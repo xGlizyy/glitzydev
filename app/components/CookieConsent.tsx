@@ -55,7 +55,7 @@ export default function CookieConsent({
   return (
     <AnimatePresence>
       {visible && (
-        <div className="fixed inset-x-0 bottom-4 z-[60] flex justify-center px-4 sm:inset-x-auto sm:right-6 sm:justify-end sm:px-0">
+        <div className="fixed inset-x-0 bottom-28 z-[60] flex justify-center px-4 sm:inset-x-auto sm:right-6 sm:justify-end sm:px-0">
           <motion.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
