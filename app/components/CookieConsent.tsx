@@ -55,13 +55,13 @@ export default function CookieConsent({
   return (
     <AnimatePresence>
       {visible && (
-        <div className="fixed inset-x-0 bottom-4 z-[60] flex justify-center px-4 sm:px-6">
+        <div className="fixed inset-x-0 bottom-4 z-[60] flex justify-center px-4 sm:inset-x-auto sm:right-6 sm:justify-end sm:px-0">
           <motion.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="glass w-full max-w-xl rounded-2xl p-5"
+            className="glass w-full max-w-sm rounded-2xl p-5 sm:max-w-md"
           >
             {!panelOpen ? (
               <>
