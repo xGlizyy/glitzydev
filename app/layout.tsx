@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Diccionario · sinónimos y antónimos",
+  title: "Wordexa ・ Estudiantes",
   description: "Busca definiciones, sinónimos y antónimos en español e inglés.",
 };
 
