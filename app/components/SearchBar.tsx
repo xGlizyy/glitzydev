@@ -2,15 +2,27 @@
 
 import { useState } from "react";
 import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
+import LanguageSelect from "@/app/components/LanguageSelect";
+
+type Language = "es" | "en";
+
+const PLACEHOLDERS: Record<Language, string> = {
+  es: "Escribe una palabra en español…",
+  en: "Type a word in English…",
+};
 
 export default function SearchBar({
   onSearch,
   loading,
   initialValue = "",
+  language,
+  onLanguageChange,
 }: {
   onSearch: (word: string) => void;
   loading: boolean;
   initialValue?: string;
+  language: Language;
+  onLanguageChange: (lang: Language) => void;
 }) {
   const [value, setValue] = useState(initialValue);
   const glow = useGlowSuppression();
@@ -26,10 +38,11 @@ export default function SearchBar({
       onPointerLeave={glow.onPointerLeave}
       className="glass flex w-full max-w-xl items-center gap-2 rounded-full p-2 transition-colors focus-within:border-orange-400/50"
     >
+      <LanguageSelect value={language} onChange={onLanguageChange} />
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Escribe una palabra en español o inglés…"
+        placeholder={PLACEHOLDERS[language]}
         className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder:text-white focus:outline-none"
         autoFocus
       />

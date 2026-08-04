@@ -9,9 +9,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Falta el parámetro q" }, { status: 400 });
   }
 
+  // `lang` scopes the lookup to a single dictionary (used by the language
+  // picker in the search bar); omitted/invalid falls back to both, as before.
+  const langParam = request.nextUrl.searchParams.get("lang");
+  const lang = langParam === "es" || langParam === "en" ? langParam : null;
+
   const [es, en] = await Promise.all([
-    fetchSpanishEntry(word).catch(() => null),
-    fetchEnglishEntry(word).catch(() => null),
+    lang && lang !== "es" ? Promise.resolve(null) : fetchSpanishEntry(word).catch(() => null),
+    lang && lang !== "en" ? Promise.resolve(null) : fetchEnglishEntry(word).catch(() => null),
   ]);
 
   const body: LookupResponse = { query: word, es, en };
