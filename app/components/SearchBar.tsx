@@ -36,7 +36,7 @@ export default function SearchBar({
       }}
       onPointerEnter={glow.onPointerEnter}
       onPointerLeave={glow.onPointerLeave}
-      className="glass flex w-full max-w-xl items-center gap-2 rounded-full p-2 transition-colors focus-within:border-orange-400/50"
+      className="glass flex w-full max-w-2xl items-center gap-2 rounded-full p-2 transition-colors focus-within:border-orange-400/50"
     >
       <LanguageSelect value={language} onChange={onLanguageChange} />
       <input

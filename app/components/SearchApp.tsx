@@ -98,7 +98,7 @@ export default function SearchApp({
       )}
 
       {status === "done" && entry && (
-        <div className="mx-auto w-full max-w-xl space-y-4">
+        <div className="mx-auto w-full max-w-2xl space-y-4">
           <ResultPanel
             key={`${language}-${entry.word}`}
             entry={entry}
