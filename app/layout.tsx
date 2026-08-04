@@ -39,11 +39,15 @@ export default async function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col overflow-x-hidden bg-black text-zinc-50">
+      <body className="h-full overflow-hidden bg-black text-zinc-50">
         <Background />
         <Nav userEmail={user?.email ?? null} />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <div className="fixed inset-x-0 top-[5.5rem] bottom-0 overflow-y-auto overflow-x-hidden overscroll-contain">
+          <div className="flex min-h-full flex-col">
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </div>
         <CookieConsent initialConsent={cookieConsent} />
       </body>
     </html>
