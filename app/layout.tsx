@@ -41,6 +41,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-black text-zinc-50">
         <Background />
+        <div className="nav-scrim" aria-hidden />
         <Nav userEmail={user?.email ?? null} />
         <main className="flex-1">{children}</main>
         <Footer />
