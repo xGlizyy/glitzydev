@@ -1,17 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import AccountMenu from "@/app/components/AccountMenu";
 import ToolsMenu from "@/app/components/ToolsMenu";
 
-const links = [{ href: "/resumen", label: "Resúmenes" }];
-
 export default function Nav({ userEmail }: { userEmail: string | null }) {
-  const [hovered, setHovered] = useState<string | null>(null);
-
   return (
     <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6">
       <nav className="nav-shell relative flex w-full max-w-3xl items-center justify-between gap-2 rounded-full px-3 py-2 sm:gap-4 sm:px-5 sm:py-2.5">
@@ -34,24 +29,6 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
 
         <div className="flex items-center gap-0.5 text-xs sm:gap-1 sm:text-sm">
           <ToolsMenu />
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onMouseEnter={() => setHovered(link.href)}
-              onMouseLeave={() => setHovered(null)}
-              className="relative rounded-full px-2.5 py-1.5 text-zinc-400 transition-colors hover:text-orange-300 sm:px-4"
-            >
-              {hovered === link.href && (
-                <motion.span
-                  layoutId="nav-hover-pill"
-                  className="absolute inset-0 rounded-full border border-orange-400/30 bg-orange-400/10"
-                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                />
-              )}
-              <span className="relative z-10">{link.label}</span>
-            </Link>
-          ))}
           <div className="ml-1">
             <AccountMenu userEmail={userEmail} />
           </div>

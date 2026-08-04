@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { FiChevronDown, FiSearch, FiZap, FiTarget } from "react-icons/fi";
+import { FiChevronDown, FiSearch, FiFileText, FiZap, FiTarget } from "react-icons/fi";
 
 const TOOLS = [
   {
@@ -11,6 +11,12 @@ const TOOLS = [
     label: "Buscar",
     description: "Diccionario de sinónimos, antónimos y definiciones",
     Icon: FiSearch,
+  },
+  {
+    href: "/resumen",
+    label: "Resúmenes",
+    description: "Genera resúmenes y preguntas de examen a partir de un PDF o texto",
+    Icon: FiFileText,
   },
   {
     href: "/reto",
