@@ -43,7 +43,7 @@ export default async function CuentaPage() {
   const historyCount = history?.length ?? 0;
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-6 pb-24 pt-32">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-6 pb-24 pt-10">
       <div className="glass rounded-3xl p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-5">
           <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-2xl font-semibold text-black shadow-lg shadow-orange-500/20">

@@ -28,7 +28,7 @@ const cookieTable = [
 
 export default function CookiePolicyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 pb-24 pt-32">
+    <div className="mx-auto max-w-3xl px-6 pb-24 pt-10">
       <div className="glass rounded-3xl p-6 sm:p-8">
         <h1 className="text-2xl font-semibold text-zinc-50">Política de cookies</h1>
         <p className="mt-3 text-sm text-zinc-400">

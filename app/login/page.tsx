@@ -18,7 +18,7 @@ export default async function LoginPage({
   const { registrado } = await searchParams;
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-8 px-6 pb-16 pt-32">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-8 px-6 pb-16 pt-10">
       <div className="text-center">
         <h1 className="text-2xl font-semibold text-zinc-50">Inicia sesión</h1>
         <p className="mt-2 text-sm text-zinc-500">

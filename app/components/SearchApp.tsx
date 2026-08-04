@@ -62,7 +62,7 @@ export default function SearchApp({
   const hasResult = status !== "idle";
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-36">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-14">
       <motion.div
         animate={{ marginTop: hasResult ? 0 : "8vh" }}
         transition={{ type: "spring", stiffness: 260, damping: 30, mass: 0.7 }}

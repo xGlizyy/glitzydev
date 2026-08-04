@@ -42,7 +42,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 pb-24 pt-40 text-center">
+    <section className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 pb-24 pt-10 text-center">
       <motion.span
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

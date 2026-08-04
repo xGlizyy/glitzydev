@@ -99,7 +99,7 @@ export default function StudyApp() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-36">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-24 pt-14">
       <div className="flex w-full flex-col items-center gap-4 text-center">
         <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">
           Resúmenes y preguntas de examen
