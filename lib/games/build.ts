@@ -3,8 +3,8 @@ import { seededShuffle } from "@/lib/random";
 import type { ChallengeQuestion } from "@/lib/challenge/types";
 import type { GameCandidate } from "./types";
 
-const OPTIONS_PER_QUESTION = 4;
-const RELATED_GROUP_SIZE = 3; // base word + 2 synonyms, plus 1 intruder = 4 options
+const DEFAULT_OPTIONS_PER_QUESTION = 4;
+const DEFAULT_INTRUSO_WORDS = 4; // base word + 2 synonyms, plus 1 intruder
 
 type SynAntCandidate = Pick<GameCandidate, "word" | "synonyms" | "antonyms">;
 
@@ -59,6 +59,7 @@ export function buildSynAntQuestion(
   distractorPool: Set<string>,
   random: () => number,
   fallbackBank: string[],
+  optionsCount = DEFAULT_OPTIONS_PER_QUESTION,
 ): ChallengeQuestion {
   const canAskSynonym = candidate.synonyms.length > 0;
   const canAskAntonym = candidate.antonyms.length > 0;
@@ -85,7 +86,7 @@ export function buildSynAntQuestion(
     [Array.from(distractorPool), fallbackBank],
     correctAnswer,
     exclude,
-    OPTIONS_PER_QUESTION - 1,
+    optionsCount - 1,
     random,
   );
 
@@ -100,6 +101,7 @@ export function buildDefinitionQuestion(
   candidate: GameCandidate,
   pool: GameCandidate[],
   random: () => number,
+  optionsCount = DEFAULT_OPTIONS_PER_QUESTION,
 ): DefinitionQuestion {
   const exclude = new Set([
     normalize(candidate.word),
@@ -112,7 +114,7 @@ export function buildDefinitionQuestion(
     [otherWords],
     candidate.word,
     exclude,
-    OPTIONS_PER_QUESTION - 1,
+    optionsCount - 1,
     random,
   );
 
@@ -129,12 +131,17 @@ export function buildDefinitionQuestion(
 }
 
 /** "¿Cuál es el intruso?" — a synonym cluster plus one unrelated word. */
-export function buildIntrusoQuestion(pool: GameCandidate[], random: () => number): IntrusoQuestion | null {
-  const eligible = pool.filter((c) => c.synonyms.length >= RELATED_GROUP_SIZE - 1);
+export function buildIntrusoQuestion(
+  pool: GameCandidate[],
+  random: () => number,
+  wordsCount = DEFAULT_INTRUSO_WORDS,
+): IntrusoQuestion | null {
+  const relatedGroupSize = wordsCount - 1; // words shown minus the intruder
+  const eligible = pool.filter((c) => c.synonyms.length >= relatedGroupSize - 1);
   if (!eligible.length) return null;
 
   const base = eligible[Math.floor(random() * eligible.length)];
-  const relatedSynonyms = seededShuffle(base.synonyms, random).slice(0, RELATED_GROUP_SIZE - 1);
+  const relatedSynonyms = seededShuffle(base.synonyms, random).slice(0, relatedGroupSize - 1);
   const related = [base.word, ...relatedSynonyms];
 
   const exclude = new Set([...related.map(normalize), ...base.antonyms.map(normalize)]);
@@ -161,9 +168,10 @@ export function buildDefinitionRound(
   pool: GameCandidate[],
   random: () => number,
   count = ROUND_SIZE,
+  optionsCount = DEFAULT_OPTIONS_PER_QUESTION,
 ): DefinitionQuestion[] {
   const chosen = seededShuffle(pool, random).slice(0, Math.min(count, pool.length));
-  return chosen.map((candidate) => buildDefinitionQuestion(candidate, pool, random));
+  return chosen.map((candidate) => buildDefinitionQuestion(candidate, pool, random, optionsCount));
 }
 
 /** A fresh round of Intruso questions, avoiding repeating the same base word twice. */
@@ -171,6 +179,7 @@ export function buildIntrusoRound(
   pool: GameCandidate[],
   random: () => number,
   count = ROUND_SIZE,
+  wordsCount = DEFAULT_INTRUSO_WORDS,
 ): IntrusoQuestion[] {
   const questions: IntrusoQuestion[] = [];
   const usedBaseWords = new Set<string>();
@@ -178,7 +187,7 @@ export function buildIntrusoRound(
 
   while (questions.length < count && guard < pool.length * 3) {
     guard++;
-    const question = buildIntrusoQuestion(pool, random);
+    const question = buildIntrusoQuestion(pool, random, wordsCount);
     if (!question) break;
     const key = normalize(question.relatedWord);
     if (usedBaseWords.has(key)) continue;
@@ -199,6 +208,7 @@ export function buildSynAntRound(
   fallbackBank: string[],
   random: () => number,
   count = SPEED_ROUND_SIZE,
+  optionsCount = DEFAULT_OPTIONS_PER_QUESTION,
 ): ChallengeQuestion[] {
   if (!pool.length) return [];
 
@@ -208,8 +218,37 @@ export function buildSynAntRound(
 
   for (let i = 0; i < count; i++) {
     const candidate = shuffled[i % shuffled.length];
-    questions.push(buildSynAntQuestion(candidate, distractorPool, random, fallbackBank));
+    questions.push(buildSynAntQuestion(candidate, distractorPool, random, fallbackBank, optionsCount));
   }
 
   return questions;
+}
+
+export type ParejasCard = {
+  id: string;
+  pairId: string;
+  label: string;
+};
+
+const DEFAULT_PAIRS_COUNT = 8;
+
+/** A shuffled word/synonym memory-match board for Parejas. */
+export function buildParejasRound(
+  pool: GameCandidate[],
+  random: () => number,
+  pairsCount = DEFAULT_PAIRS_COUNT,
+): ParejasCard[] {
+  const eligible = pool.filter((c) => c.synonyms.length > 0);
+  const chosen = seededShuffle(eligible, random).slice(0, Math.min(pairsCount, eligible.length));
+
+  const cards: ParejasCard[] = chosen.flatMap((candidate, i) => {
+    const synonym = seededShuffle(candidate.synonyms, random)[0];
+    const pairId = `${i}-${normalize(candidate.word)}`;
+    return [
+      { id: `${pairId}-word`, pairId, label: candidate.word },
+      { id: `${pairId}-synonym`, pairId, label: synonym },
+    ];
+  });
+
+  return seededShuffle(cards, random);
 }

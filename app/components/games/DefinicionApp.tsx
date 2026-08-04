@@ -7,6 +7,7 @@ import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import { readJSON, writeJSON } from "@/lib/storage/localJson";
 import { mulberry32 } from "@/lib/random";
 import { buildDefinitionRound, type DefinitionQuestion } from "@/lib/games/build";
+import { DEFAULT_DIFFICULTY, DIFFICULTY_CONFIG, readDifficulty, type Difficulty } from "@/lib/games/difficulty";
 import type { GameCandidate } from "@/lib/games/types";
 
 const BEST_KEY = "juego:definicion:best";
@@ -15,6 +16,7 @@ type Best = { score: number; total: number };
 
 export default function DefinicionApp({ pool }: { pool: GameCandidate[] }) {
   const glow = useGlowSuppression();
+  const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   // Seeded (not Math.random) so the first render matches between server and
   // client hydration; "Jugar otra vez" below is client-only and free to use
   // real randomness.
@@ -27,8 +29,17 @@ export default function DefinicionApp({ pool }: { pool: GameCandidate[] }) {
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- one-time hydration from localStorage, unavailable during SSR */
     setBest(readJSON<Best>(BEST_KEY));
+    const stored = readDifficulty();
+    if (stored !== DEFAULT_DIFFICULTY) {
+      setDifficulty(stored);
+      const nextRound = buildDefinitionRound(pool, Math.random, undefined, DIFFICULTY_CONFIG[stored].options);
+      setRound(nextRound);
+      setAnswers(nextRound.map(() => null));
+      setIndex(0);
+      setFinished(false);
+    }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
+  }, [pool]);
 
   const total = round.length;
   const question = round[index];
@@ -58,7 +69,7 @@ export default function DefinicionApp({ pool }: { pool: GameCandidate[] }) {
   }
 
   function playAgain() {
-    const nextRound = buildDefinitionRound(pool, Math.random);
+    const nextRound = buildDefinitionRound(pool, Math.random, undefined, DIFFICULTY_CONFIG[difficulty].options);
     setRound(nextRound);
     setAnswers(nextRound.map(() => null));
     setIndex(0);

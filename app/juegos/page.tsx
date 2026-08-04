@@ -1,13 +1,8 @@
 import Link from "next/link";
-import { FiZap, FiBookOpen, FiEye, FiClock } from "react-icons/fi";
+import { FiBookOpen, FiEye, FiClock, FiGrid, FiPlay } from "react-icons/fi";
+import DifficultySelector from "@/app/components/DifficultySelector";
 
 const GAMES = [
-  {
-    href: "/reto",
-    label: "Reto diario",
-    description: "5 preguntas nuevas cada día. Mantén la racha.",
-    Icon: FiZap,
-  },
   {
     href: "/juegos/definicion",
     label: "Definición",
@@ -23,8 +18,14 @@ const GAMES = [
   {
     href: "/juegos/contrarreloj",
     label: "Contrarreloj",
-    description: "Sinónimos y antónimos contra el reloj. 60 segundos.",
+    description: "Sinónimos y antónimos contra el reloj.",
     Icon: FiClock,
+  },
+  {
+    href: "/juegos/parejas",
+    label: "Parejas",
+    description: "Memoriza las cartas y empareja cada palabra con su sinónimo.",
+    Icon: FiGrid,
   },
 ];
 
@@ -38,21 +39,30 @@ export default function JuegosPage() {
         </p>
       </div>
 
+      <DifficultySelector />
+
       <div className="grid w-full gap-4 sm:grid-cols-2">
         {GAMES.map((game) => (
-          <Link
+          <div
             key={game.href}
-            href={game.href}
-            className="glass glass-hover flex flex-col items-start gap-3 rounded-2xl p-6 transition"
+            className="glass glass-hover relative flex flex-col items-start gap-3 rounded-2xl p-6 transition"
           >
+            <Link
+              href={game.href}
+              aria-label={`Jugar a ${game.label}`}
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-orange-400 to-amber-500 text-black shadow-lg shadow-orange-500/20 transition hover:brightness-110"
+            >
+              <FiPlay className="text-sm" />
+            </Link>
+
             <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/30 bg-orange-400/10 text-orange-300">
               <game.Icon className="text-lg" />
             </span>
-            <span>
+            <span className="pr-8">
               <span className="block text-sm font-semibold text-zinc-100">{game.label}</span>
               <span className="mt-1 block text-sm text-zinc-400">{game.description}</span>
             </span>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

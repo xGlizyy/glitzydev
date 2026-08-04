@@ -7,6 +7,7 @@ import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import { readJSON, writeJSON } from "@/lib/storage/localJson";
 import { mulberry32 } from "@/lib/random";
 import { buildIntrusoRound, type IntrusoQuestion } from "@/lib/games/build";
+import { DEFAULT_DIFFICULTY, DIFFICULTY_CONFIG, readDifficulty, type Difficulty } from "@/lib/games/difficulty";
 import type { GameCandidate } from "@/lib/games/types";
 
 const BEST_KEY = "juego:intruso:best";
@@ -15,6 +16,7 @@ type Best = { score: number; total: number };
 
 export default function IntrusoApp({ pool }: { pool: GameCandidate[] }) {
   const glow = useGlowSuppression();
+  const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   // Seeded for the first render so server and client markup match; "Jugar
   // otra vez" is a client-only interaction and uses real randomness.
   const [round, setRound] = useState<IntrusoQuestion[]>(() => buildIntrusoRound(pool, mulberry32(1)));
@@ -26,8 +28,17 @@ export default function IntrusoApp({ pool }: { pool: GameCandidate[] }) {
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- one-time hydration from localStorage, unavailable during SSR */
     setBest(readJSON<Best>(BEST_KEY));
+    const stored = readDifficulty();
+    if (stored !== DEFAULT_DIFFICULTY) {
+      setDifficulty(stored);
+      const nextRound = buildIntrusoRound(pool, Math.random, undefined, DIFFICULTY_CONFIG[stored].options);
+      setRound(nextRound);
+      setAnswers(nextRound.map(() => null));
+      setIndex(0);
+      setFinished(false);
+    }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
+  }, [pool]);
 
   const total = round.length;
   const question = round[index];
@@ -57,7 +68,7 @@ export default function IntrusoApp({ pool }: { pool: GameCandidate[] }) {
   }
 
   function playAgain() {
-    const nextRound = buildIntrusoRound(pool, Math.random);
+    const nextRound = buildIntrusoRound(pool, Math.random, undefined, DIFFICULTY_CONFIG[difficulty].options);
     setRound(nextRound);
     setAnswers(nextRound.map(() => null));
     setIndex(0);

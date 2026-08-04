@@ -7,6 +7,7 @@ import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import { readJSON, writeJSON } from "@/lib/storage/localJson";
 import { mulberry32 } from "@/lib/random";
 import { buildSynAntRound } from "@/lib/games/build";
+import { DEFAULT_DIFFICULTY, DIFFICULTY_CONFIG, readDifficulty, type Difficulty } from "@/lib/games/difficulty";
 import { WORD_BANK } from "@/lib/challenge/wordBank";
 import type { ChallengeQuestion } from "@/lib/challenge/types";
 import type { GameCandidate } from "@/lib/games/types";
@@ -20,8 +21,11 @@ type Phase = "ready" | "playing" | "done";
 
 export default function ContrarrelojApp({ pool }: { pool: GameCandidate[] }) {
   const glow = useGlowSuppression();
+  const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   // Seeded for the first render so server and client markup match; restarts
-  // below are client-only interactions and use real randomness.
+  // below are client-only interactions and use real randomness. The buffer
+  // and timer are invisible during "ready", so they're safe to fully rebuild
+  // once the real difficulty is known — no need to wait for that here too.
   const [buffer, setBuffer] = useState<ChallengeQuestion[]>(() =>
     buildSynAntRound(pool, WORD_BANK, mulberry32(1), BUFFER_SIZE),
   );
@@ -36,6 +40,7 @@ export default function ContrarrelojApp({ pool }: { pool: GameCandidate[] }) {
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- one-time hydration from localStorage, unavailable during SSR */
     setBest(readJSON<number>(BEST_KEY));
+    setDifficulty(readDifficulty());
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
@@ -69,8 +74,10 @@ export default function ContrarrelojApp({ pool }: { pool: GameCandidate[] }) {
   const question = buffer[index % buffer.length];
 
   function start() {
+    const config = DIFFICULTY_CONFIG[difficulty];
+    setBuffer(buildSynAntRound(pool, WORD_BANK, Math.random, BUFFER_SIZE, config.options));
     setPhase("playing");
-    setTimeLeft(ROUND_SECONDS);
+    setTimeLeft(config.seconds);
     setIndex(0);
     setScore(0);
     setSelected(null);
@@ -88,9 +95,10 @@ export default function ContrarrelojApp({ pool }: { pool: GameCandidate[] }) {
   }
 
   function playAgain() {
-    setBuffer(buildSynAntRound(pool, WORD_BANK, Math.random, BUFFER_SIZE));
+    const config = DIFFICULTY_CONFIG[difficulty];
+    setBuffer(buildSynAntRound(pool, WORD_BANK, Math.random, BUFFER_SIZE, config.options));
     setPhase("ready");
-    setTimeLeft(ROUND_SECONDS);
+    setTimeLeft(config.seconds);
     setIndex(0);
     setScore(0);
     setSelected(null);
@@ -112,7 +120,8 @@ export default function ContrarrelojApp({ pool }: { pool: GameCandidate[] }) {
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">Contrarreloj</h1>
         <p className="text-sm text-zinc-400">
-          Sinónimos y antónimos a toda velocidad. Responde tantos como puedas en 60 segundos.
+          Sinónimos y antónimos a toda velocidad. Responde tantos como puedas en{" "}
+          {DIFFICULTY_CONFIG[difficulty].seconds} segundos.
         </p>
         {best !== null && (
           <p className="flex items-center gap-1.5 text-xs font-medium text-orange-300">
