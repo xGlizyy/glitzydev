@@ -1,57 +1,14 @@
 import { fetchSpanishEntry } from "@/lib/dictionary/es";
+import { normalize, isCleanTerm } from "@/lib/dictionary/text";
+import { mulberry32, hashString, seededShuffle } from "@/lib/random";
+import { buildSynAntQuestion } from "@/lib/games/build";
 import { WORD_BANK } from "./wordBank";
-import type { ChallengeQuestion, DailyChallenge } from "./types";
+import type { DailyChallenge } from "./types";
 
 const QUESTIONS_PER_DAY = 5;
-const OPTIONS_PER_QUESTION = 4;
 
 function dateKeyOf(date: Date): string {
   return date.toISOString().slice(0, 10);
-}
-
-/** Mulberry32: tiny seeded PRNG so every visitor gets the same shuffle for a given date. */
-function mulberry32(seed: number) {
-  let state = seed | 0;
-  return function random() {
-    state = (state + 0x6d2b79f5) | 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function hashString(text: string): number {
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = (Math.imul(31, hash) + text.charCodeAt(i)) | 0;
-  }
-  return hash;
-}
-
-function seededShuffle<T>(items: T[], random: () => number): T[] {
-  const shuffled = [...items];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
-
-function normalize(word: string): string {
-  return word
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .trim();
-}
-
-// Wiktionary synonym/antonym lists sometimes carry regional notes like
-// "fallo (Venezuela —Oriente—)" or multi-word glosses — fine as reference
-// text on the dictionary page, but confusing as a standalone quiz option.
-const CLEAN_TERM = /^[a-záéíóúüñ]+(?:[ -][a-záéíóúüñ]+){0,2}$/i;
-
-function isCleanTerm(term: string): boolean {
-  return CLEAN_TERM.test(term.trim());
 }
 
 type Candidate = {
@@ -102,52 +59,6 @@ async function collectCandidates(shuffledBank: string[]): Promise<{
   return { candidates, distractorPool };
 }
 
-function buildQuestion(
-  candidate: Candidate,
-  distractorPool: Set<string>,
-  random: () => number,
-): ChallengeQuestion {
-  const canAskSynonym = candidate.synonyms.length > 0;
-  const canAskAntonym = candidate.antonyms.length > 0;
-  const type =
-    canAskSynonym && canAskAntonym
-      ? random() < 0.5
-        ? "sinonimo"
-        : "antonimo"
-      : canAskSynonym
-        ? "sinonimo"
-        : "antonimo";
-
-  const correctPool = type === "sinonimo" ? candidate.synonyms : candidate.antonyms;
-  const correctAnswer = correctPool[Math.floor(random() * correctPool.length)];
-
-  const exclude = new Set([
-    normalize(candidate.word),
-    normalize(correctAnswer),
-    ...candidate.synonyms.map(normalize),
-    ...candidate.antonyms.map(normalize),
-  ]);
-
-  const distractorCandidates = seededShuffle(Array.from(distractorPool), random).filter(
-    (term) => !exclude.has(normalize(term)),
-  );
-  const distractors = distractorCandidates.slice(0, OPTIONS_PER_QUESTION - 1);
-
-  let guard = 0;
-  while (distractors.length < OPTIONS_PER_QUESTION - 1 && guard < WORD_BANK.length) {
-    const fallback = WORD_BANK[Math.floor(random() * WORD_BANK.length)];
-    guard++;
-    if (exclude.has(normalize(fallback))) continue;
-    if (distractors.some((d) => normalize(d) === normalize(fallback))) continue;
-    distractors.push(fallback);
-  }
-
-  const options = seededShuffle([correctAnswer, ...distractors], random);
-  const correctIndex = options.findIndex((option) => normalize(option) === normalize(correctAnswer));
-
-  return { word: candidate.word, type, options, correctIndex };
-}
-
 export async function getDailyChallenge(date: Date = new Date()): Promise<DailyChallenge> {
   const dateKey = dateKeyOf(date);
   const random = mulberry32(hashString(dateKey));
@@ -155,7 +66,9 @@ export async function getDailyChallenge(date: Date = new Date()): Promise<DailyC
 
   const { candidates, distractorPool } = await collectCandidates(shuffledBank);
   const selected = seededShuffle(candidates, random).slice(0, QUESTIONS_PER_DAY);
-  const questions = selected.map((candidate) => buildQuestion(candidate, distractorPool, random));
+  const questions = selected.map((candidate) =>
+    buildSynAntQuestion(candidate, distractorPool, random, WORD_BANK),
+  );
 
   return { date: dateKey, questions };
 }

@@ -2,71 +2,43 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { FiCalendar, FiCheck, FiX, FiZap } from "react-icons/fi";
+import { FiCheck, FiX, FiRefreshCw, FiAward } from "react-icons/fi";
 import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import { readJSON, writeJSON } from "@/lib/storage/localJson";
-import type { DailyChallenge } from "@/lib/challenge/types";
+import { mulberry32 } from "@/lib/random";
+import { buildIntrusoRound, type IntrusoQuestion } from "@/lib/games/build";
+import type { GameCandidate } from "@/lib/games/types";
 
-const PROGRESS_KEY = "reto:progress:v1";
-const STREAK_KEY = "reto:streak:v1";
+const BEST_KEY = "juego:intruso:best";
 
-type Progress = { date: string; answers: (number | null)[] };
-type Streak = { count: number; lastDate: string };
+type Best = { score: number; total: number };
 
-function addDays(dateKey: string, delta: number): string {
-  const d = new Date(`${dateKey}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + delta);
-  return d.toISOString().slice(0, 10);
-}
-
-function formatDate(dateKey: string): string {
-  return new Date(`${dateKey}T00:00:00Z`).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
+export default function IntrusoApp({ pool }: { pool: GameCandidate[] }) {
   const glow = useGlowSuppression();
-  const [answers, setAnswers] = useState<(number | null)[]>(() =>
-    challenge.questions.map(() => null),
-  );
+  // Seeded for the first render so server and client markup match; "Jugar
+  // otra vez" is a client-only interaction and uses real randomness.
+  const [round, setRound] = useState<IntrusoQuestion[]>(() => buildIntrusoRound(pool, mulberry32(1)));
+  const [answers, setAnswers] = useState<(number | null)[]>(() => round.map(() => null));
   const [index, setIndex] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [streak, setStreak] = useState<Streak>({ count: 0, lastDate: "" });
+  const [best, setBest] = useState<Best | null>(null);
 
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- one-time hydration from localStorage, unavailable during SSR */
-    const storedStreak = readJSON<Streak>(STREAK_KEY);
-    if (storedStreak) setStreak(storedStreak);
-
-    const storedProgress = readJSON<Progress>(PROGRESS_KEY);
-    if (storedProgress?.date === challenge.date) {
-      setAnswers(storedProgress.answers);
-      if (storedProgress.answers.every((a) => a !== null)) {
-        setFinished(true);
-        setIndex(challenge.questions.length - 1);
-      } else {
-        setIndex(storedProgress.answers.findIndex((a) => a === null));
-      }
-    }
+    setBest(readJSON<Best>(BEST_KEY));
     /* eslint-enable react-hooks/set-state-in-effect */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [challenge.date]);
+  }, []);
 
-  const total = challenge.questions.length;
-  const question = challenge.questions[index];
+  const total = round.length;
+  const question = round[index];
   const selected = answers[index];
-  const score = answers.filter((a, i) => a === challenge.questions[i].correctIndex).length;
+  const score = answers.filter((a, i) => a === round[i].intruderIndex).length;
 
   function selectOption(optionIndex: number) {
     if (selected !== null || !question) return;
     const next = [...answers];
     next[index] = optionIndex;
     setAnswers(next);
-    writeJSON(PROGRESS_KEY, { date: challenge.date, answers: next });
   }
 
   function goNext() {
@@ -76,26 +48,28 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
     }
 
     setFinished(true);
-    const yesterday = addDays(challenge.date, -1);
-    const stored = readJSON<Streak>(STREAK_KEY);
-    let nextStreak: Streak;
-    if (stored?.lastDate === challenge.date) {
-      nextStreak = stored;
-    } else if (stored?.lastDate === yesterday) {
-      nextStreak = { count: stored.count + 1, lastDate: challenge.date };
-    } else {
-      nextStreak = { count: 1, lastDate: challenge.date };
+    const stored = readJSON<Best>(BEST_KEY);
+    if (!stored || score / total > stored.score / stored.total) {
+      const nextBest = { score, total };
+      setBest(nextBest);
+      writeJSON(BEST_KEY, nextBest);
     }
-    setStreak(nextStreak);
-    writeJSON(STREAK_KEY, nextStreak);
+  }
+
+  function playAgain() {
+    const nextRound = buildIntrusoRound(pool, Math.random);
+    setRound(nextRound);
+    setAnswers(nextRound.map(() => null));
+    setIndex(0);
+    setFinished(false);
   }
 
   if (total === 0) {
     return (
       <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-6 pb-16 pt-10 text-center">
-        <h1 className="text-2xl font-semibold text-zinc-50">Reto diario</h1>
+        <h1 className="text-2xl font-semibold text-zinc-50">Intruso</h1>
         <p className="text-sm text-zinc-400">
-          No hemos podido preparar el reto de hoy. Inténtalo de nuevo en unos minutos.
+          No hemos podido preparar preguntas ahora mismo. Inténtalo de nuevo en unos minutos.
         </p>
       </div>
     );
@@ -104,15 +78,13 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
   return (
     <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center gap-8 px-6 pb-16 pt-10">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">
-          Reto diario de sinónimos y antónimos
-        </h1>
-        <p className="flex items-center gap-1.5 text-sm text-zinc-400">
-          <FiCalendar className="text-orange-300" /> {formatDate(challenge.date)}
+        <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">Intruso</h1>
+        <p className="text-sm text-zinc-400">
+          Tres de estas palabras son sinónimos entre sí. Encuentra la que no encaja.
         </p>
-        {streak.count > 0 && (
+        {best && (
           <p className="flex items-center gap-1.5 text-xs font-medium text-orange-300">
-            <FiZap /> Racha de {streak.count} {streak.count === 1 ? "día" : "días"}
+            <FiAward /> Mejor puntuación: {best.score} / {best.total}
           </p>
         )}
       </div>
@@ -141,18 +113,12 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
               transition={{ duration: 0.25 }}
               className="glass w-full rounded-3xl p-6 sm:p-8"
             >
-              <p className="text-center text-sm text-zinc-400">
-                ¿Cuál de estas palabras es{" "}
-                {question.type === "sinonimo" ? "un sinónimo" : "un antónimo"} de…
-              </p>
-              <p className="mt-2 text-center text-3xl font-semibold text-zinc-50">
-                {question.word}
-              </p>
+              <p className="text-center text-sm text-zinc-400">¿Cuál es el intruso?</p>
 
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {question.options.map((option, i) => {
+                {question.words.map((word, i) => {
                   const isSelected = selected === i;
-                  const isCorrect = i === question.correctIndex;
+                  const isCorrect = i === question.intruderIndex;
                   const showFeedback = selected !== null;
 
                   let stateClasses = "border-white/10 bg-white/5 hover:border-orange-400/40";
@@ -164,7 +130,7 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
 
                   return (
                     <button
-                      key={option}
+                      key={`${word}-${i}`}
                       type="button"
                       disabled={showFeedback}
                       onClick={() => selectOption(i)}
@@ -172,7 +138,7 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
                       onPointerLeave={glow.onPointerLeave}
                       className={`flex items-center justify-between gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-medium text-zinc-200 transition-colors disabled:cursor-default ${stateClasses}`}
                     >
-                      {option}
+                      {word}
                       {showFeedback && isCorrect && <FiCheck className="shrink-0 text-green-300" />}
                       {showFeedback && isSelected && !isCorrect && (
                         <FiX className="shrink-0 text-red-300" />
@@ -181,6 +147,16 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
                   );
                 })}
               </div>
+
+              {selected !== null && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-4 text-center text-xs text-zinc-500"
+                >
+                  Las demás son sinónimos de <span className="text-zinc-300">{question.relatedWord}</span>.
+                </motion.p>
+              )}
 
               {selected !== null && (
                 <motion.button
@@ -202,32 +178,20 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
           animate={{ opacity: 1, y: 0 }}
           className="glass w-full rounded-3xl p-6 text-center sm:p-8"
         >
-          <p className="text-sm font-semibold uppercase tracking-wide text-orange-300">
-            Resultado de hoy
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-orange-300">Resultado</p>
           <p className="mt-2 text-4xl font-semibold text-zinc-50">
             {score} / {total}
           </p>
-          <p className="mt-2 text-sm text-zinc-400">
-            {score === total
-              ? "¡Reto perfecto! Vuelve mañana a por otro."
-              : "Vuelve mañana para un nuevo reto y seguir la racha."}
-          </p>
 
           <ol className="mt-6 space-y-2 text-left text-sm">
-            {challenge.questions.map((q, i) => {
-              const correct = answers[i] === q.correctIndex;
+            {round.map((q, i) => {
+              const correct = answers[i] === q.intruderIndex;
               return (
                 <li
                   key={i}
                   className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
                 >
-                  <span className="text-zinc-300">
-                    {q.word}{" "}
-                    <span className="text-zinc-500">
-                      ({q.type === "sinonimo" ? "sinónimo" : "antónimo"})
-                    </span>
-                  </span>
+                  <span className="text-zinc-300">{q.relatedWord}</span>
                   {correct ? (
                     <FiCheck className="shrink-0 text-green-300" />
                   ) : (
@@ -237,6 +201,14 @@ export default function RetoApp({ challenge }: { challenge: DailyChallenge }) {
               );
             })}
           </ol>
+
+          <button
+            type="button"
+            onClick={playAgain}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 px-5 py-2.5 text-sm font-semibold text-black transition hover:brightness-110"
+          >
+            <FiRefreshCw /> Jugar otra vez
+          </button>
         </motion.div>
       )}
     </div>

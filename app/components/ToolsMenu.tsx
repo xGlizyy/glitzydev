@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { FiChevronDown, FiSearch, FiZap } from "react-icons/fi";
+import { FiChevronDown, FiSearch, FiZap, FiTarget } from "react-icons/fi";
 
 const TOOLS = [
   {
@@ -17,6 +17,12 @@ const TOOLS = [
     label: "Reto diario",
     description: "Practica sinónimos y antónimos con preguntas cada día",
     Icon: FiZap,
+  },
+  {
+    href: "/juegos",
+    label: "Juegos",
+    description: "Minijuegos de vocabulario para jugar cuando quieras",
+    Icon: FiTarget,
   },
 ];
 

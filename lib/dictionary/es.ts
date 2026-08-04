@@ -1,5 +1,6 @@
 import type { DictionaryEntry, DictSense, PartOfSpeechBlock } from "./types";
 import { fetchWithTimeout } from "./http";
+import { normalize as stripAccents } from "./text";
 
 const USER_AGENT =
   "SobreMiDiccionario/1.0 (https://github.com/; contacto: samueq3fh5gt@gmail.com)";
@@ -7,11 +8,26 @@ const USER_AGENT =
 const POS_ALLOW =
   /^(Sustantivo|Adjetivo|Verbo|Adverbio|Pronombre|Preposici[oó]n|Conjunci[oó]n|Interjecci[oó]n|Art[ií]culo|Numeral|Forma)/i;
 
-function stripAccents(text: string): string {
-  return text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase();
+const TRANSIENT_STATUS = new Set([429, 502, 503, 504]);
+
+/**
+ * The games pool hits Wiktionary far more often than the once-a-day
+ * challenge did, so a single transient 502/503 now costs more (a missing
+ * candidate the pool has to fill some other way). One short retry recovers
+ * most of those, mirroring the same pattern already used for the English
+ * dictionary in en.ts.
+ */
+async function fetchWithRetry(url: string, init: RequestInit): Promise<Response | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetchWithTimeout(url, init);
+      if (res.ok || !TRANSIENT_STATUS.has(res.status)) return res;
+    } catch {
+      // falls through to retry/return null below
+    }
+    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 400));
+  }
+  return null;
 }
 
 function decodeEntities(text: string): string {
@@ -130,11 +146,11 @@ async function fetchExtract(title: string): Promise<{ pageTitle: string; text: s
   )}&prop=extracts&explaintext=1&redirects=1&format=json&formatversion=2`;
 
   try {
-    const res = await fetchWithTimeout(url, {
+    const res = await fetchWithRetry(url, {
       headers: { "User-Agent": USER_AGENT },
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return null;
+    if (!res || !res.ok) return null;
 
     const data = await res.json();
     const page = data?.query?.pages?.[0];
