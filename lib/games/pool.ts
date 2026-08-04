@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { fetchSpanishEntry } from "@/lib/dictionary/es";
 import { normalize, isCleanTerm } from "@/lib/dictionary/text";
 import { seededShuffle } from "@/lib/random";
@@ -51,7 +52,7 @@ function pickDefinition(entry: DictionaryEntry): { definition: string; example?:
  * has real synonym/antonym data *and* a usable definition, unlike Reto
  * diario's candidates which only need one or the other.
  */
-export async function getGamePool(size = 60): Promise<GameCandidate[]> {
+async function buildGamePool(size: number): Promise<GameCandidate[]> {
   const shuffledBank = seededShuffle(WORD_BANK, Math.random);
   const candidates: GameCandidate[] = [];
 
@@ -84,4 +85,19 @@ export async function getGamePool(size = 60): Promise<GameCandidate[]> {
   }
 
   return candidates;
+}
+
+// Each of the 3 game pages (Definición, Intruso, Contrarreloj) is a server
+// component that calls getGamePool() on every visit. Without this cache,
+// every single card click re-ran the whole batch-fetch loop above against
+// Wiktionary — several sequential round-trips — which is what made the
+// minigames feel slow to open. Cached for an hour (matching the revalidate
+// window already used for the underlying Wiktionary fetches in es.ts), so
+// only the first visit in that window pays the network cost.
+const getCachedGamePool = unstable_cache(buildGamePool, ["game-pool"], {
+  revalidate: 3600,
+});
+
+export async function getGamePool(size = 60): Promise<GameCandidate[]> {
+  return getCachedGamePool(size);
 }
