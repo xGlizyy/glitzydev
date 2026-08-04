@@ -9,6 +9,7 @@ import AccountMenu from "@/app/components/AccountMenu";
 const links = [
   { href: "/buscar", label: "Buscar" },
   { href: "/resumen", label: "Resúmenes" },
+  { href: "/reto", label: "Reto" },
 ];
 
 export default function Nav({ userEmail }: { userEmail: string | null }) {
