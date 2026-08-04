@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 import {
   DEFAULT_DIFFICULTY,
   DIFFICULTIES,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/games/difficulty";
 
 export default function DifficultySelector() {
+  const glow = useGlowSuppression();
   // Seeded to "normal" for the first render so server and client markup
   // match; the real (stored) value is only readable after hydration.
   const [difficulty, setDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
@@ -29,7 +31,11 @@ export default function DifficultySelector() {
   const active = DIFFICULTIES.find((option) => option.value === difficulty);
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      onPointerEnter={glow.onPointerEnter}
+      onPointerLeave={glow.onPointerLeave}
+      className="flex flex-col items-center gap-2"
+    >
       <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">Dificultad</span>
       <div className="glass flex gap-1 rounded-full p-1">
         {DIFFICULTIES.map((option) => (
