@@ -42,8 +42,8 @@ export default function JuegosPage() {
       <DifficultySelector />
 
       <div className="grid w-full gap-4 sm:grid-cols-2">
-        {GAMES.map((game) => (
-          <GameCard key={game.href} {...game} />
+        {GAMES.map(({ Icon, ...game }) => (
+          <GameCard key={game.href} {...game} icon={<Icon className="text-lg" />} />
         ))}
       </div>
     </div>

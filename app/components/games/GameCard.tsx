@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { IconType } from "react-icons";
+import type { ReactNode } from "react";
 import { FiPlay } from "react-icons/fi";
 import { useGlowSuppression } from "@/lib/hooks/useGlowSuppression";
 
@@ -9,10 +9,10 @@ type GameCardProps = {
   href: string;
   label: string;
   description: string;
-  Icon: IconType;
+  icon: ReactNode;
 };
 
-export default function GameCard({ href, label, description, Icon }: GameCardProps) {
+export default function GameCard({ href, label, description, icon }: GameCardProps) {
   const glow = useGlowSuppression();
 
   return (
@@ -30,7 +30,7 @@ export default function GameCard({ href, label, description, Icon }: GameCardPro
       </Link>
 
       <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-400/30 bg-orange-400/10 text-orange-300">
-        <Icon className="text-lg" />
+        {icon}
       </span>
       <span className="pr-8">
         <span className="block text-sm font-semibold text-zinc-100">{label}</span>
