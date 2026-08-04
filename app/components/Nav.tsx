@@ -5,12 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import AccountMenu from "@/app/components/AccountMenu";
+import ToolsMenu from "@/app/components/ToolsMenu";
 
-const links = [
-  { href: "/buscar", label: "Buscar" },
-  { href: "/resumen", label: "Resúmenes" },
-  { href: "/reto", label: "Reto" },
-];
+const links = [{ href: "/resumen", label: "Resúmenes" }];
 
 export default function Nav({ userEmail }: { userEmail: string | null }) {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -36,6 +33,7 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
         </Link>
 
         <div className="flex items-center gap-0.5 text-xs sm:gap-1 sm:text-sm">
+          <ToolsMenu />
           {links.map((link) => (
             <Link
               key={link.href}
