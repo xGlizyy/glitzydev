@@ -32,7 +32,7 @@ const GAMES = [
 export default function JuegosPage() {
   return (
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-10 px-6 pb-16 pt-10">
-      <div className="flex flex-col items-center gap-2 text-center">
+      <div className="glass flex flex-col items-center gap-2 rounded-2xl px-6 py-5 text-center">
         <h1 className="text-2xl font-semibold text-zinc-50 sm:text-3xl">Juegos de vocabulario</h1>
         <p className="max-w-md text-sm text-zinc-400">
           Sin límite de partidas ni de horario: juega cuando quieras, las veces que quieras.

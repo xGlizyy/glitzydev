@@ -56,7 +56,7 @@ export default function DifficultySelector() {
           </button>
         ))}
       </div>
-      {active && <p className="max-w-xs text-center text-xs text-zinc-500">{active.description}</p>}
+      {active && <p className="max-w-xs text-center text-xs text-white">{active.description}</p>}
     </div>
   );
 }
