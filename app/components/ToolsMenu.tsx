@@ -29,6 +29,26 @@ const TOOLS = [
 export default function ToolsMenu() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function clearCloseTimeout() {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }
+
+  function openOnHover() {
+    clearCloseTimeout();
+    setOpen(true);
+  }
+
+  // Small delay (not an instant close) so crossing the gap between the
+  // button and the dropdown below it doesn't count as "leaving".
+  function closeOnHover() {
+    clearCloseTimeout();
+    closeTimeoutRef.current = setTimeout(() => setOpen(false), 150);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -50,8 +70,15 @@ export default function ToolsMenu() {
     };
   }, [open]);
 
+  useEffect(() => clearCloseTimeout, []);
+
   return (
-    <div ref={containerRef} className="relative">
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={openOnHover}
+      onMouseLeave={closeOnHover}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -66,10 +93,11 @@ export default function ToolsMenu() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: -6 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -4 }}
-            transition={{ type: "spring", stiffness: 420, damping: 32 }}
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            exit={{ opacity: 0, scaleX: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "50% 0%" }}
             className="absolute left-1/2 top-full z-20 mt-4 w-64 max-w-[calc(100vw-2.5rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
           >
             {TOOLS.map((tool) => (
