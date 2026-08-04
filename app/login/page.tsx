@@ -19,9 +19,9 @@ export default async function LoginPage({
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-8 px-6 pb-16 pt-10">
-      <div className="text-center">
+      <div className="flex flex-col items-center gap-4 text-center">
         <h1 className="text-2xl font-semibold text-zinc-50">Inicia sesión</h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="glass rounded-2xl px-4 py-3 text-sm text-zinc-400">
           Accede para guardar tus favoritos y tu historial de búsquedas.
         </p>
       </div>
