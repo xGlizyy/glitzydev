@@ -64,7 +64,7 @@ export default function ToolsMenu() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -4 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className="glass absolute left-1/2 top-full z-20 mt-3 w-64 max-w-[calc(100vw-2.5rem)] -translate-x-1/2 overflow-hidden rounded-2xl p-1.5"
+            className="absolute left-1/2 top-full z-20 mt-4 w-64 max-w-[calc(100vw-2.5rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
           >
             {TOOLS.map((tool) => (
               <Link
