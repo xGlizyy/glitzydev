@@ -99,12 +99,18 @@ export default function ResultPanel({
                       <p className="text-xs italic text-zinc-500">“{sense.example}”</p>
                     )}
                     {(sense.synonyms?.length || sense.antonyms?.length) && (
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
                         {sense.synonyms?.length ? (
-                          <span>Sin.: {sense.synonyms.join(", ")}</span>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="text-xs text-zinc-500">Sin.:</span>
+                            <WordChips words={sense.synonyms} onSelect={onSelectWord} />
+                          </div>
                         ) : null}
                         {sense.antonyms?.length ? (
-                          <span>Ant.: {sense.antonyms.join(", ")}</span>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="text-xs text-zinc-500">Ant.:</span>
+                            <WordChips words={sense.antonyms} onSelect={onSelectWord} tone="muted" />
+                          </div>
                         ) : null}
                       </div>
                     )}

@@ -1,4 +1,5 @@
 import type { DictionaryEntry, DictSense, PartOfSpeechBlock } from "./types";
+import { fetchWithTimeout } from "./http";
 
 const USER_AGENT =
   "SobreMiDiccionario/1.0 (https://github.com/; contacto: samueq3fh5gt@gmail.com)";
@@ -72,12 +73,17 @@ function parseSenses(block: string): DictSense[] {
   // a clickable chip.
   const PLACEHOLDER_NOTE = /v[eé]ase|tesauro|no (?:se )?(?:han?|hay) encontrad/i;
 
+  // Some entries tack on a regional note, e.g. "piche (Venezuela)" — real
+  // synonym, but the parenthetical breaks it as a clickable chip / search
+  // term, so it's stripped rather than dropping the whole word.
+  const REGIONAL_NOTE = /\s*\([^)]*\)\s*$/;
+
   const splitList = (raw: string) => {
     const cleaned = raw.replace(/\.$/, "").trim();
     if (!cleaned || PLACEHOLDER_NOTE.test(cleaned)) return [];
     return cleaned
       .split(",")
-      .map((s) => s.trim())
+      .map((s) => s.replace(REGIONAL_NOTE, "").trim())
       .filter(Boolean)
       .filter((s) => !PLACEHOLDER_NOTE.test(s));
   };
@@ -123,17 +129,21 @@ async function fetchExtract(title: string): Promise<{ pageTitle: string; text: s
     title,
   )}&prop=extracts&explaintext=1&redirects=1&format=json&formatversion=2`;
 
-  const res = await fetch(url, {
-    headers: { "User-Agent": USER_AGENT },
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) return null;
+  try {
+    const res = await fetchWithTimeout(url, {
+      headers: { "User-Agent": USER_AGENT },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
 
-  const data = await res.json();
-  const page = data?.query?.pages?.[0];
-  if (!page || page.missing || !page.extract) return null;
+    const data = await res.json();
+    const page = data?.query?.pages?.[0];
+    if (!page || page.missing || !page.extract) return null;
 
-  return { pageTitle: page.title ?? title, text: decodeEntities(page.extract as string) };
+    return { pageTitle: page.title ?? title, text: decodeEntities(page.extract as string) };
+  } catch {
+    return null;
+  }
 }
 
 /** "did you mean" style suggestions; good at typos, weak at accent-folding. */
@@ -143,7 +153,7 @@ async function fetchOpenSearchTitles(word: string): Promise<string[]> {
   )}&limit=5&namespace=0&format=json`;
 
   try {
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       headers: { "User-Agent": USER_AGENT },
       next: { revalidate: 3600 },
     });
@@ -162,7 +172,7 @@ async function fetchFullTextTitles(word: string): Promise<string[]> {
   )}&srnamespace=0&srlimit=6&format=json&formatversion=2`;
 
   try {
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       headers: { "User-Agent": USER_AGENT },
       next: { revalidate: 3600 },
     });

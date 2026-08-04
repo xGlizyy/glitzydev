@@ -1,4 +1,28 @@
 import type { DictionaryEntry, DictSense, PartOfSpeechBlock } from "./types";
+import { fetchWithTimeout } from "./http";
+
+const TRANSIENT_STATUS = new Set([429, 502, 503, 504]);
+
+/**
+ * dictionaryapi.dev intermittently answers even well-known words with a
+ * transient 502/503 (verified by re-requesting "better"/"geese" repeatedly —
+ * a real word retried in isolation eventually succeeds). One short retry
+ * recovers most of those without the risk a stemming-based fallback would
+ * add (most inflected forms, e.g. "running"/"studies"/"children", already
+ * resolve directly and don't need one).
+ */
+async function fetchWithRetry(url: string, init: RequestInit): Promise<Response | null> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetchWithTimeout(url, init);
+      if (res.ok || !TRANSIENT_STATUS.has(res.status)) return res;
+    } catch {
+      // falls through to retry/return null below
+    }
+    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 400));
+  }
+  return null;
+}
 
 type RawDefinition = {
   definition: string;
@@ -21,11 +45,11 @@ type RawEntry = {
 
 async function fetchDatamuse(word: string, rel: "syn" | "ant"): Promise<string[]> {
   try {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `https://api.datamuse.com/words?rel_${rel}=${encodeURIComponent(word)}&max=12`,
       { next: { revalidate: 3600 } },
     );
-    if (!res.ok) return [];
+    if (!res || !res.ok) return [];
     const data = (await res.json()) as { word: string }[];
     return data.map((d) => d.word);
   } catch {
@@ -35,7 +59,7 @@ async function fetchDatamuse(word: string, rel: "syn" | "ant"): Promise<string[]
 
 export async function fetchEnglishEntry(word: string): Promise<DictionaryEntry | null> {
   const [dictRes, synonyms, antonyms] = await Promise.all([
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, {
+    fetchWithRetry(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, {
       next: { revalidate: 3600 },
     }).catch(() => null),
     fetchDatamuse(word, "syn"),
