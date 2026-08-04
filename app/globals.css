@@ -66,15 +66,15 @@ body {
     0 16px 40px -18px rgba(0, 0, 0, 0.7);
 }
 
-/* Fixed fade strip behind the floating navbar: scrolled content fades out
-   before it reaches the pill instead of showing through it. */
+/* Fixed opaque strip behind the floating navbar: scrolled content is cut
+   off cleanly right below it instead of showing through it. */
 .nav-scrim {
   position: fixed;
   inset: 0 0 auto 0;
-  height: 6rem;
+  height: 5.5rem;
   z-index: 40;
   pointer-events: none;
-  background: linear-gradient(to bottom, #000 0%, #000 35%, transparent 100%);
+  background: #000;
 }
 
 @keyframes blob {
