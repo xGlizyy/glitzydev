@@ -152,6 +152,21 @@ const SIGNAL_PHRASES_EN = [
 ];
 const EXAMPLE_PHRASES_EN = ["for example", "e.g.", "such as", "for instance"];
 
+// Sentences opening with one of these are meaningless on their own — they
+// refer back to something explained in a previous sentence ("como
+// consecuencia de estas condiciones...", "este proceso..."). If such a
+// sentence is picked for the summary but its antecedent isn't, the reader
+// hits a dangling reference with no way to resolve it.
+const DEPENDENT_OPENERS_ES =
+  /^(como consecuencia|como resultado|por (ello|lo tanto|tanto)|debido a (esto|ello)|en consecuencia|de este modo|de esta manera|así[, ]|esto (provocó|llevó|hizo|supuso|implicó|generó)|ello (provocó|llevó|supuso)|dich[oa]s?\s|tal(es)? (proceso|fase|paso|situación|hecho|cambio)|este (proceso|cambio|modelo|sistema)|esta (fase|etapa|situación)|estas (condiciones|circunstancias)|estos (factores|elementos)|dado esto|ante esto|frente a esto)/i;
+const DEPENDENT_OPENERS_EN =
+  /^(as a result|therefore|thus|consequently|because of this|due to this|this (led|caused|resulted|meant)|such (a )?(process|phase|situation)|these conditions|this process|given this)/i;
+
+function isDependentOpener(text: string, lang: "es" | "en"): boolean {
+  const pattern = lang === "en" ? DEPENDENT_OPENERS_EN : DEPENDENT_OPENERS_ES;
+  return pattern.test(text.trim());
+}
+
 /**
  * Multiplies a sentence's base score to favor structural content (steps,
  * causes, advantages, requirements...) and to push down example sentences,
@@ -232,6 +247,7 @@ function buildSummary(
   stopwords: Set<string>,
   freq: Map<string, number>,
   totalWordCount: number,
+  lang: "es" | "en",
 ): string {
   if (scored.length === 0) return "";
 
@@ -284,6 +300,25 @@ function buildSummary(
     representedParagraphs.add(sentenceInfos[chosen.index].paragraph);
     selectedWordCount += sentenceInfos[chosen.index].tokens.length;
     remaining.splice(bestPos, 1);
+  }
+
+  // Resolve dangling references: pull in the immediately preceding source
+  // sentence whenever a selected sentence opens with a back-referring
+  // connector and its antecedent isn't already included. Bounded to a few
+  // hops so a chain of connectors ("esto provocó..." -> "como consecuencia
+  // de ello...") can resolve fully without ever running away.
+  const selectedIndices = new Set(selected.map((s) => s.index));
+  for (let hop = 0; hop < 3; hop++) {
+    const dependents = selected.filter((s) => isDependentOpener(s.text, lang));
+    let pulledAny = false;
+    for (const dep of dependents) {
+      const prevIndex = dep.index - 1;
+      if (prevIndex < 0 || selectedIndices.has(prevIndex)) continue;
+      selected.push({ text: sentenceInfos[prevIndex].text, index: prevIndex, score: 0 });
+      selectedIndices.add(prevIndex);
+      pulledAny = true;
+    }
+    if (!pulledAny) break;
   }
 
   selected.sort((a, b) => a.index - b.index);
@@ -387,7 +422,7 @@ export function generateStudyPack(documentText: string): StudyPack {
 
   const totalWordCount = sentenceInfos.reduce((acc, s) => acc + s.tokens.length, 0);
 
-  const summary = buildSummary(scored, sentenceInfos, stopwords, freq, totalWordCount);
+  const summary = buildSummary(scored, sentenceInfos, stopwords, freq, totalWordCount, lang);
   const questions = buildQuestions(
     sentenceInfos.map((s) => s.text),
     sentenceInfos.map((s) => s.tokens),
