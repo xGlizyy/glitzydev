@@ -3,15 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { FiChevronDown, FiSearch, FiFileText, FiZap, FiTarget } from "react-icons/fi";
-import { TbCalculator } from "react-icons/tb";
+import { FiChevronDown, FiExternalLink } from "react-icons/fi";
 
 const TOOLS = [
-  { href: "/buscar", label: "Buscar", Icon: FiSearch },
-  { href: "/resumen", label: "Resúmenes", Icon: FiFileText },
-  { href: "/reto", label: "Reto diario", Icon: FiZap },
-  { href: "/juegos", label: "Juegos", Icon: FiTarget },
-  { href: "/calculadora", label: "Calculadora", Icon: TbCalculator },
+  { href: "/buscar", label: "Buscar" },
+  { href: "/reto", label: "Reto diario" },
+  { href: "/calculadora", label: "Calculadora" },
+  { href: "/resumen", label: "Resúmenes" },
+  { href: "/juegos", label: "Juegos" },
 ];
 
 export default function ToolsMenu() {
@@ -85,17 +84,17 @@ export default function ToolsMenu() {
             animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-1/2 top-full z-20 mt-4 grid w-64 max-w-[calc(100vw-2.5rem)] grid-cols-2 gap-1 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
+            className="absolute left-1/2 top-full z-20 mt-4 flex w-56 max-w-[calc(100vw-2.5rem)] flex-col gap-1 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
           >
             {TOOLS.map((tool) => (
               <Link
                 key={tool.href}
                 href={tool.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-orange-400/10"
+                className="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-orange-400/10"
               >
-                <tool.Icon className="shrink-0 text-orange-300" />
                 {tool.label}
+                <FiExternalLink className="shrink-0 text-orange-300" />
               </Link>
             ))}
           </motion.div>
