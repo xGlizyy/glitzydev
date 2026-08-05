@@ -7,36 +7,11 @@ import { FiChevronDown, FiSearch, FiFileText, FiZap, FiTarget } from "react-icon
 import { TbCalculator } from "react-icons/tb";
 
 const TOOLS = [
-  {
-    href: "/buscar",
-    label: "Buscar",
-    description: "Diccionario de sinónimos, antónimos y definiciones",
-    Icon: FiSearch,
-  },
-  {
-    href: "/resumen",
-    label: "Resúmenes",
-    description: "Genera resúmenes y preguntas de examen a partir de un PDF o texto",
-    Icon: FiFileText,
-  },
-  {
-    href: "/reto",
-    label: "Reto diario",
-    description: "Practica sinónimos y antónimos con preguntas cada día",
-    Icon: FiZap,
-  },
-  {
-    href: "/juegos",
-    label: "Juegos",
-    description: "Minijuegos de vocabulario para jugar cuando quieras",
-    Icon: FiTarget,
-  },
-  {
-    href: "/calculadora",
-    label: "Calculadora",
-    description: "Calculadora científica para resolver operaciones al instante",
-    Icon: TbCalculator,
-  },
+  { href: "/buscar", label: "Buscar", Icon: FiSearch },
+  { href: "/resumen", label: "Resúmenes", Icon: FiFileText },
+  { href: "/reto", label: "Reto diario", Icon: FiZap },
+  { href: "/juegos", label: "Juegos", Icon: FiTarget },
+  { href: "/calculadora", label: "Calculadora", Icon: TbCalculator },
 ];
 
 export default function ToolsMenu() {
@@ -110,20 +85,17 @@ export default function ToolsMenu() {
             animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-1/2 top-full z-20 mt-4 grid w-[28rem] max-w-[calc(100vw-2.5rem)] grid-cols-2 gap-1 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
+            className="absolute left-1/2 top-full z-20 mt-4 grid w-64 max-w-[calc(100vw-2.5rem)] grid-cols-2 gap-1 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/50 backdrop-blur-md"
           >
             {TOOLS.map((tool) => (
               <Link
                 key={tool.href}
                 href={tool.href}
                 onClick={() => setOpen(false)}
-                className="flex items-start gap-3 rounded-xl px-3 py-2.5 transition hover:bg-orange-400/10"
+                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-orange-400/10"
               >
-                <tool.Icon className="mt-0.5 shrink-0 text-orange-300" />
-                <span>
-                  <span className="block text-sm font-medium text-zinc-100">{tool.label}</span>
-                  <span className="block text-xs text-zinc-500">{tool.description}</span>
-                </span>
+                <tool.Icon className="shrink-0 text-orange-300" />
+                {tool.label}
               </Link>
             ))}
           </motion.div>
