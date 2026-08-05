@@ -14,6 +14,20 @@ function normalizePastedText(raw: string): string {
   return raw.replace(/\s+/g, " ").trim();
 }
 
+/** Renders `**term**` markers from the summary as bold spans, keeping the
+ * surrounding text (and the paragraph line breaks) intact. */
+function renderSummary(summary: string) {
+  return summary.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i} className="font-semibold text-zinc-100">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 export default function StudyApp() {
   const [mode, setMode] = useState<Mode>("pdf");
   const [file, setFile] = useState<File | null>(null);
@@ -193,7 +207,7 @@ export default function StudyApp() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-orange-300">
               Resumen
             </h2>
-            <p className="whitespace-pre-line text-sm text-zinc-300">{result.summary}</p>
+            <p className="whitespace-pre-line text-sm text-zinc-300">{renderSummary(result.summary)}</p>
           </div>
 
           {result.questions.length > 0 && (
