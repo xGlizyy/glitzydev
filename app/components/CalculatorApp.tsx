@@ -109,7 +109,7 @@ export default function CalculatorApp() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-5.5rem)] w-full max-w-xs flex-col items-center justify-center gap-2.5 px-4 py-2">
+    <div className="mx-auto flex h-[calc(100dvh-5.5rem)] w-full max-w-xs flex-col items-center justify-center gap-2.5 px-4 py-2 pb-24">
       <h1 className="text-lg font-semibold text-zinc-50">Calculadora</h1>
 
       <div className="glass flex gap-1 rounded-full p-1 text-xs">
