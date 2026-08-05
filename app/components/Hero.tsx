@@ -49,7 +49,7 @@ export default function Hero() {
         transition={{ duration: 0.5 }}
         className="rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1 text-xs font-medium uppercase tracking-wide text-orange-300"
       >
-        Diccionario · Resúmenes · Calculadora · Retos y juegos
+        Todo lo que necesitas para estudiar, aprender y resolver tus dudas, en un solo lugar.
       </motion.span>
 
       <motion.h1
