@@ -109,16 +109,16 @@ export default function CalculatorApp() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-5.5rem)] w-full max-w-xs flex-col items-center justify-center gap-2.5 px-4 py-2 pb-24">
-      <h1 className="text-lg font-semibold text-zinc-50">Calculadora</h1>
+    <div className="mx-auto flex h-[calc(100dvh-5.5rem)] w-full max-w-sm flex-col items-center justify-center gap-3 px-4 py-2 pb-24">
+      <h1 className="text-xl font-semibold text-zinc-50">Calculadora</h1>
 
-      <div className="glass flex gap-1 rounded-full p-1 text-xs">
+      <div className="glass flex gap-1 rounded-full p-1 text-sm">
         {(["deg", "rad"] as const).map((mode) => (
           <button
             key={mode}
             type="button"
             onClick={() => setAngleMode(mode)}
-            className="relative rounded-full px-3 py-1 font-medium transition-colors"
+            className="relative rounded-full px-4 py-1.5 font-medium transition-colors"
           >
             {angleMode === mode && (
               <motion.span
@@ -136,16 +136,16 @@ export default function CalculatorApp() {
         ))}
       </div>
 
-      <div className="glass w-full rounded-2xl p-3">
-        <div className="min-h-4 overflow-x-auto whitespace-nowrap text-right text-xs text-zinc-500">
+      <div className="glass w-full rounded-2xl p-4">
+        <div className="min-h-5 overflow-x-auto whitespace-nowrap text-right text-sm text-zinc-500">
           {expression || " "}
         </div>
-        <div className="mt-0.5 overflow-x-auto whitespace-nowrap text-right text-2xl font-semibold text-zinc-50">
+        <div className="mt-1 overflow-x-auto whitespace-nowrap text-right text-3xl font-semibold text-zinc-50">
           {expression === "Error" ? "Error" : (preview ?? expression) || "0"}
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-4 gap-1.5">
+      <div className="grid w-full grid-cols-4 gap-2">
         {SCIENTIFIC_BUTTONS.map((button) => (
           <button
             key={button.label}
@@ -153,14 +153,14 @@ export default function CalculatorApp() {
             onClick={() => press(button)}
             onPointerEnter={glow.onPointerEnter}
             onPointerLeave={glow.onPointerLeave}
-            className={`rounded-lg border border-white/10 bg-white/5 py-1.5 text-xs font-medium transition-colors ${buttonClasses(button.variant)}`}
+            className={`rounded-lg border border-white/10 bg-white/5 py-2 text-sm font-medium transition-colors ${buttonClasses(button.variant)}`}
           >
             {button.label}
           </button>
         ))}
       </div>
 
-      <div className="grid w-full grid-cols-4 gap-1.5">
+      <div className="grid w-full grid-cols-4 gap-2">
         {PAD_BUTTONS.map((button) => (
           <button
             key={button.label}
@@ -168,7 +168,7 @@ export default function CalculatorApp() {
             onClick={() => press(button)}
             onPointerEnter={glow.onPointerEnter}
             onPointerLeave={glow.onPointerLeave}
-            className={`flex items-center justify-center rounded-lg border border-white/10 bg-white/5 py-2 text-sm font-medium transition-colors ${buttonClasses(button.variant)}`}
+            className={`flex items-center justify-center rounded-lg border border-white/10 bg-white/5 py-3 text-base font-medium transition-colors ${buttonClasses(button.variant)}`}
           >
             {button.label === "DEL" ? <FiDelete /> : button.label}
           </button>
@@ -178,7 +178,7 @@ export default function CalculatorApp() {
           onClick={pressEquals}
           onPointerEnter={glow.onPointerEnter}
           onPointerLeave={glow.onPointerLeave}
-          className="col-span-4 mt-0.5 rounded-lg bg-gradient-to-r from-orange-400 to-amber-500 py-2 text-sm font-semibold text-black transition hover:brightness-110"
+          className="col-span-4 mt-1 rounded-lg bg-gradient-to-r from-orange-400 to-amber-500 py-3 text-base font-semibold text-black transition hover:brightness-110"
         >
           =
         </button>
