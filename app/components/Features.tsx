@@ -1,24 +1,39 @@
 "use client";
 
 import { motion } from "motion/react";
-import { FiBookOpen, FiGlobe, FiStar } from "react-icons/fi";
+import { FiFileText, FiGlobe, FiStar, FiTarget, FiZap } from "react-icons/fi";
+import { TbCalculator } from "react-icons/tb";
 
 const features = [
   {
     icon: FiGlobe,
-    title: "Bilingüe",
-    description: "Busca en español o inglés a la vez y compara resultados en pestañas.",
+    title: "Diccionario bilingüe",
+    description: "Definiciones, sinónimos y antónimos en español e inglés, en un solo buscador.",
   },
   {
-    icon: FiBookOpen,
-    title: "Sinónimos y antónimos",
-    description:
-      "Cada definición viene con palabras relacionadas, un clic para saltar entre ellas.",
+    icon: FiFileText,
+    title: "Resúmenes automáticos",
+    description: "Sube un PDF o pega tus apuntes y obtén un resumen con preguntas de examen.",
+  },
+  {
+    icon: TbCalculator,
+    title: "Calculadora científica",
+    description: "Operaciones, potencias, raíces y funciones trigonométricas al instante.",
+  },
+  {
+    icon: FiZap,
+    title: "Reto diario",
+    description: "Practica sinónimos y antónimos con preguntas nuevas cada día.",
+  },
+  {
+    icon: FiTarget,
+    title: "Juegos de vocabulario",
+    description: "Minijuegos para repasar mientras te diviertes, a tu ritmo.",
   },
   {
     icon: FiStar,
-    title: "Guarda tus palabras",
-    description: "Crea una cuenta gratis para marcar favoritos y revisar tu historial de búsquedas.",
+    title: "Guarda tu progreso",
+    description: "Crea una cuenta gratis para marcar favoritos y revisar tu historial.",
   },
 ];
 

@@ -20,7 +20,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Wordexa ・ Estudiantes",
-  description: "Busca definiciones, sinónimos y antónimos en español e inglés.",
+  description:
+    "Diccionario bilingüe, resúmenes, calculadora científica, retos diarios y juegos de vocabulario para estudiantes.",
 };
 
 export default async function RootLayout({

@@ -6,10 +6,10 @@ import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } fr
 import { FiArrowUpRight } from "react-icons/fi";
 
 const floatingChips = [
-  { label: "Sinónimo", corner: "tl", delay: 0 },
-  { label: "Antónimo", corner: "bl", delay: 0.6 },
-  { label: "ES ⇄ EN", corner: "tr", delay: 0.3 },
-  { label: "Definición", corner: "br", delay: 0.9 },
+  { label: "Diccionario", corner: "tl", delay: 0 },
+  { label: "Resúmenes", corner: "bl", delay: 0.6 },
+  { label: "Calculadora", corner: "tr", delay: 0.3 },
+  { label: "Reto diario", corner: "br", delay: 0.9 },
 ] as const;
 
 const cornerClasses: Record<(typeof floatingChips)[number]["corner"], string> = {
@@ -49,7 +49,7 @@ export default function Hero() {
         transition={{ duration: 0.5 }}
         className="rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1 text-xs font-medium uppercase tracking-wide text-orange-300"
       >
-        Español · Inglés · en un solo buscador
+        Diccionario · Resúmenes · Calculadora · Retos y juegos
       </motion.span>
 
       <motion.h1
@@ -58,9 +58,9 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 sm:text-6xl"
       >
-        Encuentra la palabra exacta,{" "}
+        Todo lo que necesitas para estudiar,{" "}
         <span className="bg-gradient-to-r from-orange-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">
-          al instante
+          en un solo sitio
         </span>
       </motion.h1>
 
@@ -70,8 +70,8 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="max-w-xl text-base text-zinc-400"
       >
-        Definiciones, sinónimos y antónimos en español e inglés. Crea una cuenta gratis para
-        guardar tus palabras favoritas y volver a ellas cuando quieras.
+        Diccionario bilingüe, resúmenes automáticos, calculadora científica, retos diarios y
+        juegos de vocabulario. Herramientas pensadas para estudiantes, gratis y en un solo lugar.
       </motion.p>
 
       <motion.div
@@ -94,7 +94,7 @@ export default function Hero() {
             href="/buscar"
             className="glass glass-hover flex items-center rounded-full px-6 py-2.5 text-sm font-medium text-zinc-200"
           >
-            Probar el buscador
+            Explorar herramientas
           </Link>
         </motion.div>
       </motion.div>

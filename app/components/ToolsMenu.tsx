@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { FiChevronDown, FiSearch, FiFileText, FiZap, FiTarget } from "react-icons/fi";
+import { TbCalculator } from "react-icons/tb";
 
 const TOOLS = [
   {
@@ -29,6 +30,12 @@ const TOOLS = [
     label: "Juegos",
     description: "Minijuegos de vocabulario para jugar cuando quieras",
     Icon: FiTarget,
+  },
+  {
+    href: "/calculadora",
+    label: "Calculadora",
+    description: "Calculadora científica para resolver operaciones al instante",
+    Icon: TbCalculator,
   },
 ];
 
