@@ -91,7 +91,7 @@ export default function ToolsMenu() {
                 key={tool.href}
                 href={tool.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-100 transition hover:bg-orange-400/10"
+                className="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 font-industrial text-sm tracking-wide text-zinc-100 transition hover:bg-orange-400/10"
               >
                 {tool.label}
                 <FiExternalLink className="shrink-0 text-orange-300" />

@@ -24,7 +24,9 @@ export default function Nav({ userEmail }: { userEmail: string | null }) {
               className="scale-90 object-contain"
             />
           </motion.span>
-          <span className="hidden text-sm font-medium text-zinc-300 sm:inline">Wordexa</span>
+          <span className="hidden font-industrial text-sm tracking-wide text-zinc-300 sm:inline">
+            Wordexa
+          </span>
         </Link>
 
         <div className="flex items-center gap-0.5 text-xs sm:gap-1 sm:text-sm">

@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# licensed desktop-only font files — not for redistribution
+*.otf
